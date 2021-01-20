@@ -23,8 +23,9 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
     
     % load basic parameters by expanding DLC_cell
     wind_type = DLC_cell{row_xls,2} ;    % read Wind_Type from dlc_cell
-    DLC_cell=eval(join(['basic_config','_',wind_type,'(DLC_cell,row_xls);'])) ;
-    
+    if ~ismissing(wind_type)
+        DLC_cell=eval(join(['basic_config','_',wind_type,'(DLC_cell,row_xls);'])) ;
+    end
     % switch through input files and load corresponding configs
     for n_temp = 1:6
         
@@ -130,7 +131,10 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
 
                 % check if label exists
                 if ~isempty(idx)
-
+                    
+                    if n_temp==3 
+                        turbsim_trig = true ; % turbsim file has to be created
+                    end    
                     % read vector elements from v_combo
                     if ismember(col_xls,v_index)      
                         idx_v = find(v_index == col_xls);
@@ -145,6 +149,8 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
                         end       
 
                     end
+                elseif n_temp==3
+                    turbsim_trig = false ; 
                 end  
             end
 
@@ -182,13 +188,14 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
                template.Val(24)={files(5,i_DLC)};                   
 
                % write turbsim .bts file name to inflowwind
-            elseif n_temp == 4
+            elseif n_temp == 4 && turbsim_trig
                template.Val(12)={convertCharsToStrings(join(['"','../wind/',DLC_name,filename_ext,'_turbsim.bts','"']))};
             end
 
             % Write FAST-file
+            if n_temp~=3 | turbsim_trig 
             Matlab2FAST(template,template_path,filename);
-
+            end
        end
        
     end
@@ -198,7 +205,9 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
         main_files = strip(files(6,:),'"') ;   % load names of .fst files
         
         % create script for turbsim 
-        create_script('turbsim',turbsim_files,join([file_path,'/wind/',DLC_name]));
+        if turbsim_trig
+            create_script('turbsim',turbsim_files,join([file_path,'/wind/',DLC_name]));
+        end    
         % create script for FAST
         create_script('openfast',main_files,join([file_path,'/sim/',DLC_name]));
 end
