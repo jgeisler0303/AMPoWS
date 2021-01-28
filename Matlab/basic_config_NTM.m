@@ -1,33 +1,33 @@
 function dlc_cell = basic_config_NTM(dlc_cell,row) 
 
-wind_speed = dlc_cell{row,3} ; % read wind speed from dlc_cell
-duration = dlc_cell{row,4};    % read duration from dlc_cell
+wind_speed = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Speed',true)} ; % read wind speed from dlc_cell
+duration = dlc_cell{row,find_label_or_create(dlc_cell,'Duration',true)};    % read duration from dlc_cell
+seed = dlc_cell{row,find_label_or_create(dlc_cell,'Seed',true)};  % read Random Seed from dlc_cell
 
-% search for URef label (windspeed TurbSim-file)
-[dlc_cell , idx] = find_label_or_create(dlc_cell,'URef') ;
+% search for URef label (windspeed in TurbSim-Inputfile)
+[idx,dlc_cell] = find_label_or_create(dlc_cell,'URef',false) ;
 dlc_cell{row,idx}=wind_speed;  % write windspeed
 
-% search for WindType label (Type of inputfile for inflowwind)
-[dlc_cell , idx] = find_label_or_create(dlc_cell,'WindType') ;
+% search for WindType label (Type of inputfile for inflowwind-file)
+[idx,dlc_cell] = find_label_or_create(dlc_cell,'WindType',false) ;
 dlc_cell{row,idx}='3' ; 
 
-% search for IEC_WindType label (TurbModel Turbsim)
-[dlc_cell , idx] = find_label_or_create(dlc_cell,'IEC_WindType') ;
+% search for IEC_WindType label (TurbModel Turbsim-Inputfile)
+[idx,dlc_cell] = find_label_or_create(dlc_cell,'IEC_WindType',false) ;
 dlc_cell{row,idx}='NTM' ; 
 
-% search for UsableTime (sim-time TurbSim-file)
-[dlc_cell , idx] = find_label_or_create(dlc_cell,'UsableTime') ;
+% search for UsableTime (sim-time TurbSim-Inputfile)
+[idx,dlc_cell] = find_label_or_create(dlc_cell,'UsableTime',false) ;
 dlc_cell{row,idx}=duration; 
 
-% search for AnalysisTime (sim-time TurbSim-file)
-[dlc_cell , idx] = find_label_or_create(dlc_cell,'AnalysisTime') ;
+% search for AnalysisTime (sim-time TurbSim-Inputfile)
+[idx,dlc_cell] = find_label_or_create(dlc_cell,'AnalysisTime',false) ;
 dlc_cell{row,idx}=duration; 
 
-% search for TMax label (sim-time main input)
-[dlc_cell , idx] = find_label_or_create(dlc_cell,'TMax') ;
+% search for TMax label (sim-time main input (.fst))
+[idx,dlc_cell] = find_label_or_create(dlc_cell,'TMax',false) ;
 dlc_cell{row,idx}=duration;
 
-% search for RandSeed1 label (First Random Seed Turbsim-file)
-[dlc_cell , idx] = find_label_or_create(dlc_cell,'RandSeed1') ;
-r = sprintf('%.0f',(-2147483648 + (2147483647+2147483647)*rand)); % generate Random number
-dlc_cell{row,idx} = r ;
+% search for RandSeed1 label (First Random Seed Turbsim-Inputfile)
+[idx,dlc_cell] = find_label_or_create(dlc_cell,'RandSeed1',false) ;
+dlc_cell{row,idx} = seed ;

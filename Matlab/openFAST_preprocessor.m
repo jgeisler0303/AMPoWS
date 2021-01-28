@@ -14,15 +14,15 @@ aerodyn = FAST2Matlab(config{5,2});
 inflowwind = FAST2Matlab(config{6,2});
 turbsim = FAST2Matlab(config{7,2});
 
-col_start = find(strcmp(DLC_cell(1,:),{'Seperator'})==1) +1; % first "non-basic" column
+col_start = find_label_or_create(DLC_cell,'Seperator',true) +1; % first "non-basic" column
 
 % loop over each row in DLC config 
 for row_xls = 2:size(DLC_cell,1) % first row contains labels
     
     files = strings; % storage for files to write in main input
-    
+    turbsim_trig = false ; % initialize trigger to create turbsim file
     % load basic parameters by expanding DLC_cell
-    wind_type = DLC_cell{row_xls,2} ;    % read Wind_Type from dlc_cell
+    wind_type = DLC_cell{row_xls,find_label_or_create(DLC_cell,'Wind-Type',true)} ;    % read Wind_Type from dlc_cell
     if ~ismissing(wind_type)
         DLC_cell=eval(join(['basic_config','_',wind_type,'(DLC_cell,row_xls);'])) ;
     end
@@ -149,8 +149,6 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
                         end       
 
                     end
-                elseif n_temp==3
-                    turbsim_trig = false ; 
                 end  
             end
 
@@ -163,7 +161,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
             erase_label=["(" , ")"] ;        % elements to erase from label to write in filename
 
             % loop over each combination to generate filename extension
-            for i = 1:length(v_combo(:,1))
+            for i = 1:size(v_combo, 1) 
                 % load label name and erase unallowed characters
                 f_label=erase(DLC_cell{1,v_index(i)},erase_label); 
 
@@ -201,13 +199,13 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
     end
     
     % create batch/shell -script
-        turbsim_files = strip(files(3,:),'"'); % load names of turbsim input files
-        main_files = strip(files(6,:),'"') ;   % load names of .fst files
-        
-        % create script for turbsim 
-        if turbsim_trig
-            create_script('turbsim',turbsim_files,join([file_path,'/wind/',DLC_name]));
-        end    
-        % create script for FAST
-        create_script('openfast',main_files,join([file_path,'/sim/',DLC_name]));
+    turbsim_files = strip(files(3,:),'"'); % load names of turbsim input files
+    main_files = strip(files(6,:),'"') ;   % load names of .fst files
+
+    % create script for turbsim 
+    if turbsim_trig
+        create_script('turbsim',turbsim_files,join([file_path,'/wind/',DLC_name]));
+    end    
+    % create script for FAST
+    create_script('openfast',main_files,join([file_path,'/sim/',DLC_name]));
 end
