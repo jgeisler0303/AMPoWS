@@ -26,90 +26,45 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
     if ~ismissing(wind_type)
         DLC_cell=eval(join(['basic_config','_',wind_type,'(DLC_cell,row_xls);'])) ;
     end
+    
+    [v_combo, v_index] = generate_vector_combinations(DLC_cell, row_xls, col_start);    % Identify all vectors in row & save all possible combinations
+    
     % switch through input files and load corresponding configs
     for n_temp = 1:6
         
         switch n_temp
             case 1
-            template = aerodyn; 
-            file_suffix ='_aerodyn.dat';
-            path_spec='/sim/';
-            template_path=config{5,2};
+                template = aerodyn; 
+                file_suffix ='_aerodyn.dat';
+                path_spec='/sim/';
+                template_path=config{5,2};
             case 2
-            template = elastodyn;   
-            file_suffix ='_elastodyn.dat';
-            path_spec='/sim/';
-            template_path=config{3,2};
+                template = elastodyn;   
+                file_suffix ='_elastodyn.dat';
+                path_spec='/sim/';
+                template_path=config{3,2};
             case 3
-            template = turbsim; 
-            file_suffix ='_turbsim.inp';
-            path_spec='/wind/';
-            template_path=config{7,2};
+                template = turbsim; 
+                file_suffix ='_turbsim.inp';
+                path_spec='/wind/';
+                template_path=config{7,2};
             case 4
-            template = inflowwind;    
-            file_suffix ='_inflowwind.dat';
-            path_spec='/sim/';
-            template_path=config{6,2};
+                template = inflowwind;    
+                file_suffix ='_inflowwind.dat';
+                path_spec='/sim/';
+                template_path=config{6,2};
             case 5
-            template = servodyn;  
-            file_suffix ='_servodyn.dat';
-            path_spec='/sim/';
-            template_path=config{4,2};
+                template = servodyn;  
+                file_suffix ='_servodyn.dat';
+                path_spec='/sim/';
+                template_path=config{4,2};
             case 6
-            template = maininput; 
-            file_suffix ='.fst';
-            path_spec='/sim/';
-            template_path=config{2,2};
-        
+                template = maininput; 
+                file_suffix ='.fst';
+                path_spec='/sim/';
+                template_path=config{2,2};
         end
         
-        
-        %% 2. identify all vectors in row & save all possible combinations
-        
-        v_combo = [1];        % intialize vector combination matrix to use combvec function
-        v_index = [];         % storage for column indices of vectors in DLC_cell
-        struct_id = struct(); % storage for vectors with identifiers
-        
-        % loop over each "non-basic" column
-        for col_xls = col_start:size(DLC_cell,2)
-            
-            % create all combinations of vectors WITHOUT indentifiers
-            try  e = eval(DLC_cell{row_xls,col_xls}); % read vector from char
-                if isvector(e) && numel(e)>1      % check if element is vector with more than one element
-                    v_combo = combvec(v_combo,e); % combination of vectors
-                    v_index = [v_index, col_xls]; % save row number of rows with vector
-                end
-            catch
-                % process vectors only; try next column
-            end
-            
-
-            
-            % sort all vectors WITH identifiers by used identifier
-            if ischar(DLC_cell{row_xls,col_xls}) && contains(DLC_cell{row_xls,col_xls},'<') % check if identifier is used
-                split = strsplit(DLC_cell{row_xls,col_xls},'>'); % split element into identifier and vector
-                ident_name = strip(split{1},'left','<');         % save name of used identifier
-                
-                if isfield(struct_id,ident_name)      % check if identifier has already been used
-                    struct_id.(ident_name) = [struct_id.(ident_name);   % add vector to exsisting identifier
-                                              col_xls, eval(split{2})]; % save column of vector as first element in each row of struct
-                else
-                    struct_id.(ident_name) = [col_xls, eval(split{2})]; % create new field with identifier
-                end
-            end
-            
-        end
-  
-        % create combinations of ALL vectors 
-        ids = fieldnames(struct_id);   % check if struct contains identifiers 
-        if ~isempty(ids)
-            for idx = 1:length(ids)
-               v_combo = combvec(v_combo, struct_id.(ids{idx})(:,2:end));    % combine identifier-vectors with other vectors
-               v_index = [v_index, (struct_id.(ids{idx})(:,1))'];            % save columns of identifier-vectors
-            end
-        end
-        
-        v_combo = v_combo(2:end,:);    % erase initial value of v_combo
      
         
         if isempty(v_combo)
@@ -118,7 +73,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
             col_DLC = 1:length(v_combo(1,:));   % if DLC contains vectors: repeat for all combinations
         end
          
-            % loop over all combinations
+        % loop over all combinations
         for i_DLC = col_DLC
                 
             %% 3. Write values in templates     
@@ -135,9 +90,10 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
                     if n_temp==3 
                         turbsim_trig = true ; % turbsim file has to be created
                     end    
-                    % read vector elements from v_combo
-                    if ismember(col_xls,v_index)      
-                        idx_v = find(v_index == col_xls);
+                    
+                    idx_v = find(v_index == col_xls);  % read vector elements from v_combo
+                    
+                    if ~isempty(idx_v)
                         template.Val(idx)={v_combo(idx_v,i_DLC)};
 
                     % read single elements from DLC_cell
