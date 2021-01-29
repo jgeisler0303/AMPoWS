@@ -1,19 +1,6 @@
-%% 1. load configuration and template-files 
+%% 1. load configuration and template-files
 
-% load DLC config from Excel-sheet
-DLC_cell = readcell('openFAST_config.xlsx','Sheet','DLC_List');
-
-% load template files 
-config=readcell('openFAST_config.xlsx','Sheet','config'); % path to files from Excel-sheet
-file_path=config{9,2}; % location of simulation directory
-
-maininput = FAST2Matlab(config{2,2});
-elastodyn = FAST2Matlab(config{3,2});
-servodyn = FAST2Matlab(config{4,2});
-aerodyn = FAST2Matlab(config{5,2});
-inflowwind = FAST2Matlab(config{6,2});
-turbsim = FAST2Matlab(config{7,2});
-
+[DLC_cell,config,templates] = read_config('openFAST_config.xlsx');
 col_start = find_label_or_create(DLC_cell,'Seperator',true) +1; % first "non-basic" column
 
 % loop over each row in DLC config 
@@ -21,6 +8,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
     
     files = strings; % storage for files to write in main input
     turbsim_trig = false ; % initialize trigger to create turbsim file
+    
     % load basic parameters by expanding DLC_cell
     wind_type = DLC_cell{row_xls,find_label_or_create(DLC_cell,'Wind-Type',true)} ;    % read Wind_Type from dlc_cell
     if ~ismissing(wind_type)
@@ -34,35 +22,46 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
         
         switch n_temp
             case 1
-                template = aerodyn; 
+                template = templates.aerodyn; 
                 file_suffix ='_aerodyn.dat';
+                file_path = config.sim_path ;
                 path_spec='/sim/';
-                template_path=config{5,2};
+                template_path=config.aerodyn_path;
             case 2
-                template = elastodyn;   
+                template = templates.elastodyn;   
                 file_suffix ='_elastodyn.dat';
+                
+                file_path = config.sim_path ;
                 path_spec='/sim/';
-                template_path=config{3,2};
+                template_path=config.elastodyn_path;
             case 3
-                template = turbsim; 
+                template = templates.turbsim; 
                 file_suffix ='_turbsim.inp';
+                
+                file_path = config.wind_path ;
                 path_spec='/wind/';
-                template_path=config{7,2};
+                template_path=config.turbsim_path;
             case 4
-                template = inflowwind;    
+                template = templates.inflowwind;    
                 file_suffix ='_inflowwind.dat';
+                
+                file_path = config.sim_path ;
                 path_spec='/sim/';
-                template_path=config{6,2};
+                template_path=config.inflowwind_path;
             case 5
-                template = servodyn;  
+                template = templates.servodyn;  
                 file_suffix ='_servodyn.dat';
+                
+                file_path = config.sim_path ;
                 path_spec='/sim/';
-                template_path=config{4,2};
+                template_path=config.servodyn_path;
             case 6
-                template = maininput; 
+                template = templates.maininput; 
                 file_suffix ='.fst';
+              
+                file_path = config.sim_path ;
                 path_spec='/sim/';
-                template_path=config{2,2};
+                template_path=config.maininput_path;
         end
         
      
@@ -129,7 +128,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
             end   
         
             % generate filename
-            filename = join([file_path,path_spec,DLC_name,filename_ext,file_suffix]);
+            filename = join([file_path,DLC_name,filename_ext,file_suffix]);
 
             % store filename to write in maininput file
             files(n_temp,i_DLC) = convertCharsToStrings(join(['"',DLC_name,filename_ext,file_suffix,'"'])); 
@@ -160,8 +159,8 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
 
     % create script for turbsim 
     if turbsim_trig
-        create_script('turbsim',turbsim_files,join([file_path,'/wind/',DLC_name]));
+        create_script('turbsim',turbsim_files,join([config.wind_path,DLC_name]));
     end    
     % create script for FAST
-    create_script('openfast',main_files,join([file_path,'/sim/',DLC_name]));
+    create_script('openfast',main_files,join([config.sim_path,DLC_name]));
 end
