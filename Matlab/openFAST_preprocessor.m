@@ -128,7 +128,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
             end   
         
             % generate filename
-            filename = join([file_path,DLC_name,filename_ext,file_suffix]);
+            filename = join([file_path,'/',DLC_name,filename_ext,file_suffix]);
 
             % store filename to write in maininput file
             files(n_temp,i_DLC) = convertCharsToStrings(join(['"',DLC_name,filename_ext,file_suffix,'"'])); 
@@ -142,7 +142,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
 
                % write turbsim .bts file name to inflowwind
             elseif n_temp == 4 && turbsim_trig
-               template.Val(12)={convertCharsToStrings(join(['"','../wind/',DLC_name,filename_ext,'_turbsim.bts','"']))};
+               template.Val(12)={convertCharsToStrings(join(['"',config.wind_path,'/',DLC_name,filename_ext,'_turbsim.bts','"']))};
             end
 
             % Write FAST-file
@@ -159,8 +159,8 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
 
     % create script for turbsim 
     if turbsim_trig
-        create_script('turbsim',turbsim_files,join([config.wind_path,DLC_name]));
+        create_script('turbsim',turbsim_files,join([config.wind_path,'/',DLC_name]));
     end    
     % create script for FAST
-    create_script('openfast',main_files,join([config.sim_path,DLC_name]));
+    create_script('openfast',main_files,join([config.sim_path,'/',DLC_name]));
 end
