@@ -6,7 +6,7 @@ col_start = find_label_or_create(DLC_cell,'Seperator',true) +1; % first "non-bas
 % loop over each row in DLC config 
 for row_xls = 2:size(DLC_cell,1) % first row contains labels
     
-    files = strings; % storage for files to write in main input
+    files = struct(); % storage for files to write in main input
     turbsim_trig = false ; % initialize trigger to create turbsim file
     
     % load basic parameters by expanding DLC_cell
@@ -16,66 +16,37 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
     end
     
     [v_combo, v_index] = generate_vector_combinations(DLC_cell, row_xls, col_start);    % Identify all vectors in row & save all possible combinations
+            
+    if isempty(v_combo)
+        col_DLC = 1;    % no vectors: no combinations -> only 1 cycle of write & generate   
+    else
+        col_DLC = 1:length(v_combo(1,:));   % if DLC contains vectors: repeat for all combinations
+    end
     
-    % switch through input files and load corresponding configs
-    for n_temp = 1:6
+    % loop over input files and load corresponding configs
+    for n_temp = (convertCharsToStrings(fieldnames(templates)))'
         
-        switch n_temp
-            case 1
-                template = templates.aerodyn; 
-                file_suffix ='_aerodyn.dat';
-                file_path = config.sim_path ;
-                path_spec='/sim/';
-                template_path=config.aerodyn_path;
-            case 2
-                template = templates.elastodyn;   
-                file_suffix ='_elastodyn.dat';
-                
-                file_path = config.sim_path ;
-                path_spec='/sim/';
-                template_path=config.elastodyn_path;
-            case 3
-                template = templates.turbsim; 
-                file_suffix ='_turbsim.inp';
-                
-                file_path = config.wind_path ;
-                path_spec='/wind/';
-                template_path=config.turbsim_path;
-            case 4
-                template = templates.inflowwind;    
-                file_suffix ='_inflowwind.dat';
-                
-                file_path = config.sim_path ;
-                path_spec='/sim/';
-                template_path=config.inflowwind_path;
-            case 5
-                template = templates.servodyn;  
-                file_suffix ='_servodyn.dat';
-                
-                file_path = config.sim_path ;
-                path_spec='/sim/';
-                template_path=config.servodyn_path;
-            case 6
-                template = templates.maininput; 
-                file_suffix ='.fst';
-              
-                file_path = config.sim_path ;
-                path_spec='/sim/';
-                template_path=config.maininput_path;
-        end
+        template = templates.(n_temp);
         
-     
-        
-        if isempty(v_combo)
-            col_DLC = 1;    % no vectors: no combinations -> only 1 cycle    
+        if strcmp(n_temp, 'turbsim')
+            file_path = config.wind_path;
+            file_type = '.inp';     
+        elseif strcmp(n_temp, 'maininput')
+            file_path = config.sim_path;
+            file_type = '.fst';   
         else
-            col_DLC = 1:length(v_combo(1,:));   % if DLC contains vectors: repeat for all combinations
+            file_path = config.sim_path;
+            file_type = '.dat';   
         end
+        
+        file_suffix = join(['_',convertStringsToChars(n_temp),file_type]);  
+        template_path = config.(join([convertStringsToChars(n_temp),'_path']));
+     
          
         % loop over all combinations
         for i_DLC = col_DLC
                 
-            %% 3. Write values in templates     
+            %% 2. Write values in templates     
        
             % loop over each "non-basic" column
             for col_xls = col_start:size(DLC_cell,2)
@@ -86,7 +57,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
                 % check if label exists
                 if ~isempty(idx)
                     
-                    if n_temp==3 
+                    if strcmp(n_temp,'turbsim') 
                         turbsim_trig = true ; % turbsim file has to be created
                     end    
                     
@@ -108,7 +79,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
             end
 
 
-            %% 4. Generate files
+            %% 3. Generate files
 
             DLC_name = DLC_cell{row_xls,1} ; % load DLC name
             filename_ext = '_';              % initialize filename extension
@@ -131,22 +102,22 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
             filename = join([file_path,'/',DLC_name,filename_ext,file_suffix]);
 
             % store filename to write in maininput file
-            files(n_temp,i_DLC) = convertCharsToStrings(join(['"',DLC_name,filename_ext,file_suffix,'"'])); 
+            files.(n_temp)(i_DLC) = convertCharsToStrings(join(['"',DLC_name,filename_ext,file_suffix,'"'])); 
 
             % write file references to maininput file
-            if n_temp == 6 
-               template.Val(23)={files(1,i_DLC)};
-               template.Val(18)={files(2,i_DLC)};
-               template.Val(22)={files(4,i_DLC)};
-               template.Val(24)={files(5,i_DLC)};                   
+            if strcmp(n_temp,'maininput') 
+               template.Val(find(strcmp(template.Label,'AeroFile')==1))   = {files.aerodyn(i_DLC)};
+               template.Val(find(strcmp(template.Label,'EDFile')==1))     = {files.elastodyn(i_DLC)};
+               template.Val(find(strcmp(template.Label,'InflowFile')==1)) = {files.inflowwind(i_DLC)};
+               template.Val(find(strcmp(template.Label,'ServoFile')==1))  = {files.servodyn(i_DLC)};                   
 
-               % write turbsim .bts file name to inflowwind
-            elseif n_temp == 4 && turbsim_trig
+            % write turbsim .bts file name to inflowwind
+            elseif strcmp(n_temp,'inflowwind') && turbsim_trig
                template.Val(12)={convertCharsToStrings(join(['"',config.wind_path,'/',DLC_name,filename_ext,'_turbsim.bts','"']))};
             end
 
             % Write FAST-file
-            if n_temp~=3 | turbsim_trig 
+            if ~strcmp(n_temp,'turbsim') | turbsim_trig 
             Matlab2FAST(template,template_path,filename);
             end
        end
@@ -154,8 +125,8 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
     end
     
     % create batch/shell -script
-    turbsim_files = strip(files(3,:),'"'); % load names of turbsim input files
-    main_files = strip(files(6,:),'"') ;   % load names of .fst files
+    turbsim_files = strip(files.turbsim,'"'); % load names of turbsim input files
+    main_files = strip(files.maininput,'"') ;   % load names of .fst files
 
     % create script for turbsim 
     if turbsim_trig

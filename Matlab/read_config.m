@@ -21,9 +21,9 @@ config.inflowwind_path = config_cell{6,2} ;
 config.turbsim_path = config_cell{7,2} ;
 
 % load templates of FAST- Inputfiles
-templates.maininput = FAST2Matlab(config_cell{2,2});
 templates.elastodyn = FAST2Matlab(config_cell{3,2});
 templates.servodyn = FAST2Matlab(config_cell{4,2});
 templates.aerodyn = FAST2Matlab(config_cell{5,2});
-templates.inflowwind = FAST2Matlab(config_cell{6,2});
 templates.turbsim = FAST2Matlab(config_cell{7,2});
+templates.inflowwind = FAST2Matlab(config_cell{6,2});
+templates.maininput = FAST2Matlab(config_cell{2,2});
