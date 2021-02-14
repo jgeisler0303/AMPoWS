@@ -8,7 +8,7 @@ seed = dlc_cell{row,find_label_or_create(dlc_cell,'Seed',true)};  % read Random 
 [idx,dlc_cell] = find_label_or_create(dlc_cell,'URef',false) ;
 dlc_cell{row,idx}=wind_speed;  % write windspeed
 
-% search for WindType label (Type of inputfile for inflowwind-file)
+% search for WindType label (Type of inputfile for inflowwind.dat-file)
 [idx,dlc_cell] = find_label_or_create(dlc_cell,'WindType',false) ;
 dlc_cell{row,idx}='3' ; 
 
