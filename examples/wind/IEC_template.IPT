@@ -1,0 +1,20 @@
+!HEADER: Sample input file for IECWind version 5.01.01
+!Output file parameters
+True       SI UNITS (True=SI or False=ENGLISH)
+{Transient_Event_Time}        Time for start of IEC transient condition, sec
+!Wind Site parameters
+{Turb_Class}          IEC WIND TURBINE CLASS (1, 2 or 3)
+b          WIND TURBULENCE CATEGORY (A, B or C)
+{Wind_Slope}        Slope of the wind inflow (IEC specifies between -8 and +8), deg
+{Shear_Exp}          IEC standard used for wind shear exponent
+!Turbine parameters
+80       Wind turbine hub-height, m or ft
+80       Wind turbine rotor diameter, m or ft
+5       Cut-in wind speed, m/s or ft/s
+10       Rated wind speed, m/s or ft/s
+20       Cut-out wind speed, m/s or ft/s
+!List of Conditions to generate (one per line)
+{IEC-condition}
+
+
+

@@ -1,4 +1,4 @@
-function dlc_cell = basic_config_ETM(dlc_cell,row) 
+function [dlc_cell, turbsim_trig] = basic_config_ETM(dlc_cell,row) 
 
 wind_speed = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Speed',true)} ; % read wind speed from dlc_cell
 duration = dlc_cell{row,find_label_or_create(dlc_cell,'Duration',true)};    % read duration from dlc_cell
@@ -32,4 +32,6 @@ dlc_cell{row,idx}=duration;
 % search for RandSeed1 label (First Random Seed Turbsim-Inputfile)
 [idx,dlc_cell] = find_label_or_create(dlc_cell,'RandSeed1',false) ;
 dlc_cell{row,idx} = seed ;
+
+turbsim_trig = true;
 

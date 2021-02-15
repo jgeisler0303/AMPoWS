@@ -26,12 +26,10 @@ templates.elastodyn = FAST2Matlab(config_cell{3,2});
 templates.servodyn = FAST2Matlab(config_cell{4,2});
 templates.aerodyn = FAST2Matlab(config_cell{5,2});
 
-% generate iecwind template structure
+% generate wind template structures
+templates.turbsim = FAST2Matlab(config_cell{7,2});
 templates.iecwind = gen_iec_template;
-% templates.iecwind.Label = [{'Transient-Event-Time'} ; {'Wind-Slope'}; {'Shear-Exp'};{'Wind-Type'}];
-% templates.iecwind.Val = cell(size(templates.iecwind.Label)) ;
 
 % load templates of FAST- Inputfiles
-templates.turbsim = FAST2Matlab(config_cell{7,2});
 templates.inflowwind = FAST2Matlab(config_cell{6,2});
 templates.maininput = FAST2Matlab(config_cell{2,2});

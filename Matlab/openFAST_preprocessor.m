@@ -10,13 +10,17 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
     turbsim_trig = false ; % initialize trigger to create turbsim file
     
     % load basic parameters by expanding DLC_cell
-    wind_type = DLC_cell{row_xls,find_label_or_create(DLC_cell,'Wind-Type',true)} ;    % read Wind_Type from dlc_cell
+    wind_type = DLC_cell{row_xls,find_label_or_create(DLC_cell,'Wind-Type',true)};    % read Wind_Type from dlc_cell
     
     if ~ismissing(wind_type)
-        DLC_cell=eval(join(['basic_config','_',wind_type,'(DLC_cell,row_xls);'])) ;
+        if contains(wind_type,'IEC')
+            DLC_cell = basic_config_detwind(DLC_cell,row_xls);
+        else
+            [DLC_cell, turbsim_trig] = eval(join(['basic_config','_',wind_type,'(DLC_cell,row_xls);']));
+        end
     end
     
-    [v_combo, v_index] = generate_vector_combinations(DLC_cell, row_xls, col_start);    % Identify all vectors in row & save all possible combinations
+    [v_combo, v_index] = generate_vector_combinations(DLC_cell, row_xls, col_start);   % Identify all vectors in row & save all possible combinations
             
     if isempty(v_combo)
         col_DLC = 1;    % no vectors: no combinations -> only 1 cycle of write & generate   
@@ -29,7 +33,10 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
         
         template = templates.(n_temp);
         
-        if strcmp(n_temp, 'turbsim')
+        if strcmp(n_temp, 'iecwind')
+            file_path = config.wind_path;
+            file_type = '.wnd';
+        elseif strcmp(n_temp, 'turbsim')
             file_path = config.wind_path;
             file_type = '.inp';     
         elseif strcmp(n_temp, 'maininput')
@@ -51,7 +58,8 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
             %% 2. Write values in templates  
             
             % struct to save labelnames for filename_generation
-            turbsim_labelnames = struct('label',{},'value',{});   
+            wind_labels.turbsim = struct('label',{},'value',{});
+            wind_labels.iecwind = struct('label',{},'value',{}); 
        
             % loop over each "non-basic" column
             for col_xls = col_start:size(DLC_cell,2)
@@ -60,11 +68,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
                 idx = find(strcmp(template.Label,DLC_cell{1,col_xls})==1);
                 
                 % check if label exists
-                if ~isempty(idx)
-                    
-                    if strcmp(n_temp,'turbsim') 
-                        turbsim_trig = true ; % turbsim file has to be created
-                    end    
+                if ~isempty(idx)   
                     
                     idx_v = find(v_index == col_xls);  % read vector elements from v_combo
                     
@@ -72,8 +76,11 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
                         template.Val(idx)={v_combo(idx_v,i_DLC)};
                         
                         if strcmp(n_temp,'turbsim')
-                            turbsim_labelnames(end+1).label = DLC_cell{1,col_xls};
-                            turbsim_labelnames(end).value = v_combo(idx_v,i_DLC);
+                            wind_labels.turbsim(end+1).label = DLC_cell{1,col_xls};
+                            wind_labels.turbsim(end).value = v_combo(idx_v,i_DLC);
+                        elseif strcmp(n_temp,'iecwind')
+                            wind_labels.iecwind(end+1).label = DLC_cell{1,col_xls};
+                            wind_labels.iecwind(end).value = v_combo(idx_v,i_DLC);
                         end
 
                     % read single elements from DLC_cell
@@ -94,7 +101,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
 
             %% 3. Generate files
 
-            filename_ext = generate_filename_ext(DLC_cell, v_index, v_combo(:,i_DLC), n_temp, turbsim_labelnames);
+            filename_ext = generate_filename_ext(DLC_cell, v_index, v_combo(:,i_DLC), n_temp, wind_labels);
             
             % generate filename
             DLC_name = DLC_cell{row_xls,1} ;
@@ -117,8 +124,13 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
                 template.Val(find(strcmp(template.Label,'FileName_BTS')==1))={strrep(convertCharsToStrings(join(['"',config.wind_path,'/',turbname])),'inp','bts')};
             end
 
-            % Write FAST-file
-            if ~strcmp(n_temp,'turbsim') | turbsim_trig 
+            % Generate files
+            if strcmp(n_temp,'iecwind') && ~turbsim_trig
+                % Generate deterministic iecwind
+                generate_iec_wind(template_path,template,filename)
+            elseif ~strcmp(n_temp,'turbsim') && ~strcmp(n_temp,'iecwind')
+                Matlab2FAST(template,template_path,filename);
+            elseif strcmp(n_temp,'turbsim') && turbsim_trig 
                 Matlab2FAST(template,template_path,filename);
             end
             
