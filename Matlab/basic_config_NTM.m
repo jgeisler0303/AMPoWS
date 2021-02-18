@@ -1,8 +1,8 @@
 function [dlc_cell, turbsim_trig] = basic_config_NTM(dlc_cell,row) 
 
-wind_speed = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Speed',true)} ; % read wind speed from dlc_cell
-duration = dlc_cell{row,find_label_or_create(dlc_cell,'Duration',true)};    % read duration from dlc_cell
-seed = dlc_cell{row,find_label_or_create(dlc_cell,'Seed',true)};  % read Random Seed from dlc_cell
+wind_speed = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Speed',true)} ;
+duration = dlc_cell{row,find_label_or_create(dlc_cell,'Duration',true)};
+seed = dlc_cell{row,find_label_or_create(dlc_cell,'Seed',true)};
 
 % search for URef label (windspeed in TurbSim-Inputfile)
 [idx,dlc_cell] = find_label_or_create(dlc_cell,'URef',false) ;

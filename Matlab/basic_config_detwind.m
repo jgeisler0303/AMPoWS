@@ -5,7 +5,7 @@ turbclass = dlc_cell{row,find_label_or_create(dlc_cell,'Turb-Class',true)};
 shearexp = dlc_cell{row,find_label_or_create(dlc_cell,'Shear-Exp',true)};
 time_trans = dlc_cell{row,find_label_or_create(dlc_cell,'Transient-Event-Time',true)};
 ieccond = erase(dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Type',true)},'IEC:'); 
-duration = dlc_cell{row,find_label_or_create(dlc_cell,'Duration',true)};    % read duration from dlc_cell
+duration = dlc_cell{row,find_label_or_create(dlc_cell,'Duration',true)};
 
 % search for WindType label (Type of inputfile for inflowwind.dat-file)
 [idx,dlc_cell] = find_label_or_create(dlc_cell,'WindType',false);
