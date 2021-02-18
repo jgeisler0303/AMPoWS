@@ -6,13 +6,13 @@ col_start = find_label_or_create(DLC_cell,'Seperator',true) +1; % first "non-bas
 % loop over each row in DLC config 
 for row_xls = 2:size(DLC_cell,1) % first row contains labels
     
-    files = struct();      % storage for files to write in main input
+    files = struct();      % storage for filenames to write in main input
     turbsim_trig = false ; % initialize trigger to create turbsim file
     
     % load basic parameters by expanding DLC_cell
-    wind_type = DLC_cell{row_xls,find_label_or_create(DLC_cell,'Wind-Type',true)};    % read Wind_Type from dlc_cell
+    wind_type = DLC_cell{row_xls,find_label_or_create(DLC_cell,'Wind-Type',true)};
     
-    % run basic configuration according chosen windtype
+    % run basic configuration according to chosen windtype
     if ~ismissing(wind_type)
         if contains(wind_type,'IEC')
             DLC_cell = basic_config_detwind(DLC_cell,row_xls);
@@ -50,15 +50,15 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
         end
         
         file_suffix = join(['_',convertStringsToChars(n_temp),file_type]);  
-        template_path = config.(join([convertStringsToChars(n_temp),'_path']));
      
         % loop over all combinations
         for i_DLC = col_DLC
             
             %% 2. Write values in templates  
             
-            [template , wind_labels] = write_templates(n_temp,i_DLC,DLC_cell,row_xls,col_start,template,v_combo,v_index) ;
+            [template , wind_labels] = write_templates(n_temp, i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index) ;
                 
+           
             %% 3. Generate files
 
             filename_ext = generate_filename_ext(DLC_cell, v_index, v_combo(:,i_DLC), n_temp, wind_labels);
@@ -69,33 +69,10 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
 
             % store filename to write in maininput file
             files.(n_temp)(i_DLC) = convertCharsToStrings(join(['"',DLC_name,filename_ext,file_suffix,'"'])); 
+            
+            % create references and generate files
+            generate_files(n_temp, template, files, config, turbsim_trig, filename, i_DLC);
 
-            % write file references to maininput file
-            if strcmp(n_temp,'maininput')
-                
-                template.Val(find(strcmp(template.Label,'AeroFile')==1))   = {files.aerodyn(i_DLC)};
-                template.Val(find(strcmp(template.Label,'EDFile')==1))     = {files.elastodyn(i_DLC)};
-                template.Val(find(strcmp(template.Label,'InflowFile')==1)) = {files.inflowwind(i_DLC)};
-                template.Val(find(strcmp(template.Label,'ServoFile')==1))  = {files.servodyn(i_DLC)};                   
-
-            % write turbsim .bts file name to inflowwind
-            elseif strcmp(n_temp,'inflowwind') && turbsim_trig
-                turbname = strip(convertStringsToChars(files.turbsim(i_DLC)),'"');
-                template.Val(find(strcmp(template.Label,'FileName_BTS')==1))={strrep(convertCharsToStrings(join(['"',config.wind_path,'/',turbname])),'inp','bts')};
-            elseif strcmp(n_temp,'inflowwind') && ~ turbsim_trig
-                uni_wind_name = strip(convertStringsToChars(files.iecwind(i_DLC)),'"');
-                template.Val(find(strcmp(template.Label,'Filename_Uni')==1))={convertCharsToStrings(join(['"',config.wind_path,'/',uni_wind_name,'"']))};
-            end
-
-            % Generate files
-            if strcmp(n_temp,'iecwind') && ~turbsim_trig
-                % Generate deterministic iecwind
-                generate_iec_wind(template_path,template,filename)
-            elseif ~strcmp(n_temp,'turbsim') && ~strcmp(n_temp,'iecwind')
-                Matlab2FAST(template,template_path,filename);
-            elseif strcmp(n_temp,'turbsim') && turbsim_trig 
-                Matlab2FAST(template,template_path,filename);
-            end
             
        end
        

@@ -1,6 +1,6 @@
 function [] = create_script(command,files,name)
 
-%create .bat/.sh -file to run multiple FAST simulations
+% create .bat/.sh -file to run multiple FAST simulations
 
 if isunix % Linux-System -> shell-script
    filename = join([name,'.sh']) ;

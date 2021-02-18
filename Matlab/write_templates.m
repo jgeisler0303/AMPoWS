@@ -3,8 +3,7 @@ function[template,wind_labels] = write_templates(n_temp,i_DLC,DLC_cell,row_xls,c
     %% 2. Write values in templates  
 
     % struct to save labelnames for filename_generation
-    wind_labels.turbsim = struct('label',{},'value',{});
-    wind_labels.iecwind = struct('label',{},'value',{}); 
+    wind_labels = struct('label',{},'value',{});
 
     % loop over each "non-basic" column
     for col_xls = col_start:size(DLC_cell,2)
@@ -20,12 +19,9 @@ function[template,wind_labels] = write_templates(n_temp,i_DLC,DLC_cell,row_xls,c
             if ~isempty(idx_v)
                 template.Val(idx)={v_combo(idx_v,i_DLC)};
 
-                if strcmp(n_temp,'turbsim')
-                    wind_labels.turbsim(end+1).label = DLC_cell{1,col_xls};  % ÜBERARBEITEN
-                    wind_labels.turbsim(end).value = v_combo(idx_v,i_DLC);
-                elseif strcmp(n_temp,'iecwind')
-                    wind_labels.iecwind(end+1).label = DLC_cell{1,col_xls};
-                    wind_labels.iecwind(end).value = v_combo(idx_v,i_DLC);
+                if strcmp(n_temp,'turbsim') | strcmp(n_temp,'iecwind')
+                    wind_labels(end+1).label = DLC_cell{1,col_xls};
+                    wind_labels(end).value = v_combo(idx_v,i_DLC);
                 end
 
             % read single elements from DLC_cell
