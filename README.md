@@ -6,9 +6,9 @@ This set of _Matlab_ code is developed to simplify the simulation of different s
 
 # How to install
 1. Install the current _OpenFAST_-version (including _TurbSim_) as described in  https://openfast.readthedocs.io/en/master/source/install/#
-2. Install the NREL _IECwind_ module. This module is currently not available in the NREL repository but can be downloaded here: https://github.com/BecMax/IECWind . Compile the Fortran source code and name the generated binary "iecwind".
-2. Add the executables to the PATH-variable of your system to make them executable from anywhere.
-3. Install the OpenFAST-Matlab-Toolbox which is available here: https://github.com/OpenFAST/matlab-toolbox and add the toolbox to your Matlab-PATH.
+1. Install the NREL _IECwind_ module. This module is currently not available in the NREL repository but can be downloaded here: https://github.com/BecMax/IECWind . Compile the Fortran source code and name the generated binary "iecwind".
+1. Add the executables to the PATH-variable of your system to make them executable from anywhere.
+1. Install the OpenFAST-Matlab-Toolbox which is available here: https://github.com/OpenFAST/matlab-toolbox and add the toolbox to your _Matlab_-PATH. Add the "iecwind" executable to the _Matlab_-Path as well.
 
 
 # How to use

@@ -1,4 +1,4 @@
-function[template,wind_labels] = write_templates(n_temp,i_DLC,DLC_cell,row_xls,col_start,template,v_combo,v_index)
+function[template,wind_labels] = write_templates(template_name,i_DLC,DLC_cell,row_xls,col_start,template,v_combo,v_index)
 
     %% 2. Write values in templates  
 
@@ -10,7 +10,6 @@ function[template,wind_labels] = write_templates(n_temp,i_DLC,DLC_cell,row_xls,c
 
         % find location of used label in current input file
         idx = find(strcmp(template.Label,DLC_cell{1,col_xls})==1);
-
         % check if label exists
         if ~isempty(idx)   
 
@@ -19,7 +18,7 @@ function[template,wind_labels] = write_templates(n_temp,i_DLC,DLC_cell,row_xls,c
             if ~isempty(idx_v)
                 template.Val(idx)={v_combo(idx_v,i_DLC)};
 
-                if strcmp(n_temp,'turbsim') | strcmp(n_temp,'iecwind')
+                if strcmp(template_name,'turbsim') | strcmp(template_name,'iecwind')
                     wind_labels(end+1).label = DLC_cell{1,col_xls};
                     wind_labels(end).value = v_combo(idx_v,i_DLC);
                 end

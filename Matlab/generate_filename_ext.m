@@ -1,4 +1,4 @@
-function [filename_ext] = generate_filename_ext(DLC_cell, v_index, v_combo_col, n_temp, wind_labelnames)
+function [filename_ext] = generate_filename_ext(DLC_cell, v_index, v_combo_col, template_name, wind_labelnames)
 
 %% Generate filenames
 
@@ -6,7 +6,7 @@ filename_ext = '_';              % initialize filename extension
 erase_label=["(" , ")"] ;        % elements to erase from label to write in filename
 
 % create wind file extensions
-if strcmp(n_temp,'turbsim') | strcmp(n_temp,'iecwind')
+if strcmp(template_name,'turbsim') | strcmp(template_name,'iecwind')
     if ~isempty(wind_labelnames)
         for i = 1:length(wind_labelnames.value)
             % load label name and erase unallowed characters
