@@ -1,11 +1,10 @@
 function [] = create_script(command,files,name)
 
-%create .bat/.sh -file to run multiple FAST simulations
+% create .bat/.sh -file to run multiple FAST simulations
 
 if isunix % Linux-System -> shell-script
    filename = join([name,'.sh']) ;
    initial_line = '#!/bin/bash';
-%    set_exec = join(['chmod+x ',name]);
    
 elseif ispc %Windows-System -> batch-file
    filename = join([name,'.bat']) ; 
@@ -22,3 +21,8 @@ for i=1:length(files)
     fprintf(output,line);
 end
 fclose(output);
+
+% if is Linux-System -> make the file executable
+if isunix   
+    fileattrib(filename,'+x')
+end    

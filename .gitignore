@@ -1,0 +1,5 @@
+examples/generated/
+*.~lock*
+*.asv
+*.dll
+
