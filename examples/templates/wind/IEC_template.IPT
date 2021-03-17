@@ -5,6 +5,8 @@ True       SI UNITS (True=SI or False=ENGLISH)
 !Wind Site parameters
 {Turb_Class}          IEC WIND TURBINE CLASS (1, 2 or 3)
 b          WIND TURBULENCE CATEGORY (A, B or C)
+14.0	   Turbulence Intensity for S-Class
+42.5	   Vref for S-class (used only to generate steady ETMs and EOG(with V1)(V50=1.4*Vref and V1=0.8*V50))
 {Wind_Slope}        Slope of the wind inflow (IEC specifies between -8 and +8), deg
 {Shear_Exp}          IEC standard used for wind shear exponent
 !Turbine parameters

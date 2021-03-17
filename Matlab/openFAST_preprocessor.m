@@ -1,6 +1,17 @@
 %% 1. load configuration and template-files
 
 [DLC_cell,config,templates] = read_config('openFAST_config.xlsx');
+% create target directories if they don't exist yet
+[~, ~]= mkdir(config.sim_path); % suppress warning, if directory exists
+[~, ~]= mkdir(config.wind_path); % suppress warning, if directory exists
+
+% make path to wind directory absolute
+old_dir= cd(config.wind_path);
+config.wind_path= cd(old_dir);
+
+% copy all sub-file that don't need templating into the target directory
+templates= copy_sub_files(templates, config);
+
 col_start = find_label_or_create(DLC_cell,'Seperator',true) +1; % first "non-basic" column
 
 % loop over each row in DLC config 
