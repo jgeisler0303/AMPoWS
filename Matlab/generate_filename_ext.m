@@ -1,4 +1,6 @@
 function [filename_ext] = generate_filename_ext(DLC_cell, v_index, v_combo_col, template_name, wind_labelnames)
+%GENERATE_FILENAME_EXT Generates explicit filename extension for the input-files by appending
+%label-value pairs. Wind files are only named after wind-specific labels.
 
 %% Generate filenames
 

@@ -1,4 +1,8 @@
 function [v_combo, v_index] = generate_vector_combinations(DLC_cell,row_xls, col_start)
+%GENERATE_VECTOR_COMBINATIONS Generates a matrix (v_combo) with all
+%possible combinations of the simulation parameters entered as a vector. In
+%addition the associated column index for each vector entry is stored in
+%v_index.
 
 %% Identify all vectors in row & save all possible combinations
 
