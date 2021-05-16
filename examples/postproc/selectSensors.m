@@ -1,5 +1,6 @@
 function [idx] = selectSensors(outputdata,sensors)
-
+    
+% find indices of selected sensor in output.datastructure
 idx = [];
 
 for sensor = sensors
@@ -8,7 +9,6 @@ for sensor = sensors
     b = strcmp(sensors_cell,sensor_str);
     i = find(b);
    
-    
     idx = [idx i];
     
 end

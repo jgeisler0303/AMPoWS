@@ -1,10 +1,11 @@
 function [outputs] = readFASTOutputs(ppconfig)
 
-% 1. check if vector of output structure exists and contains every DLC
+% check if vector of output structure exists and contains every DLC
 
 if evalin('base',"exist('outputs','var')") ~= 0
     outputs = evalin('base',"outputs");
     DLCs_to_read =[];
+    
     
     for DLC = ppconfig.DLCs 
         
@@ -18,7 +19,7 @@ else
     DLCs_to_read = ppconfig.DLCs;
 end
 
-
+% read FAST Output binaries
 for DLC = DLCs_to_read
     
     DLCout = struct();

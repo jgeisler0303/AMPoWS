@@ -1,6 +1,6 @@
 function [] = plot_timeseries(ppconfig)
 
-% 1. check if plots already exist
+% check if plots already exist
 sensors_to_plot = [] ;
 for sensor = ppconfig.sensors
     plot_name = join([sensor,ppconfig.DLCs]);
