@@ -10,7 +10,7 @@ erase_label=["(" , ")"] ;        % elements to erase from label to write in file
 % create wind file extensions
 if strcmp(template_name,'turbsim') | strcmp(template_name,'iecwind')
     if ~isempty(wind_labelnames)
-        for i = 1:length(wind_labelnames.value)
+        for i = 1:length(wind_labelnames)
             % load label name and erase unallowed characters
             f_label = erase(wind_labelnames(i).label, erase_label);
             % load cooresponding value and erase '.'- char
