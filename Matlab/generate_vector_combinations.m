@@ -6,7 +6,7 @@ function [v_combo, v_index] = generate_vector_combinations(DLC_cell,row_xls, col
 
 %% Identify all vectors in row & save all possible combinations
 
-v_combo = [1];        % intialize vector combination matrix to use combvec function
+v_combo = [1];        % intialize vector combination matrix to use allcombos function
 v_index = [];         % storage for column indices of vectors in DLC_cell
 struct_id = struct(); % storage for vectors with identifiers
 
@@ -17,7 +17,7 @@ for col_xls = col_start:size(DLC_cell,2)
     try  
         e = eval(DLC_cell{row_xls,col_xls}); % read vector from char
         if isvector(e) && numel(e)>1      % check if element is vector with more than one element
-            v_combo = combvec(v_combo,e); % combination of vectors
+            v_combo = allcombos(v_combo,e); % combination of vectors
             v_index = [v_index, col_xls]; % save row number of rows with vector
         end
     catch
@@ -49,7 +49,7 @@ end
 % create combinations of ALL vectors 
 ids = fieldnames(struct_id);   % check if struct contains identifiers 
 for idx = 1:length(ids)
-   v_combo = combvec(v_combo, struct_id.(ids{idx})(:,2:end));    % combine identifier-vectors with other vectors
+   v_combo = allcombos(v_combo, struct_id.(ids{idx})(:,2:end));    % combine identifier-vectors with other vectors
    v_index = [v_index, (struct_id.(ids{idx})(:,1))'];            % save columns of identifier-vectors
 end
 
