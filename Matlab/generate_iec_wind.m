@@ -1,4 +1,10 @@
 function []= generate_iec_wind(template,template_file,outfile)
+%GENERATE_IEC_WIND Generates .bts-file by running IEC-wind. 
+%Fills template-input-file (template_file) with the parameters set in the
+%corresponding template-structure (template).
+%Runs the IECWind module with the filled input file and moves the generated
+%.bts-file with name and target-directory given in outfile.
+
 
 input = fopen(template_file,'r');   % open template file
 output = fopen('IEC.IPT','w');      % open/create output file (IECwind Input)

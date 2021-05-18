@@ -1,4 +1,6 @@
 function [] = generate_files(template_name, template, files, config, turbsim_trig, filename, i_DLC)
+%GENERATE_FILES Generates OpenFAST, iecwind and TurbSim input files.
+
 
 template_path = config.(join([convertStringsToChars(template_name),'_path']));
 

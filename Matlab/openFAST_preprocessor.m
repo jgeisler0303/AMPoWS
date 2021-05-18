@@ -75,7 +75,6 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
             
             % generate filename
             DLC_name = DLC_cell{row_xls,1} ;
-%             filename = join([file_path,'/',DLC_name,filename_ext,file_suffix]);
             filename = fullfile(file_path,join([DLC_name,filename_ext,file_suffix]));  
             % store filename to write in maininput file
             files.(template_name)(i_DLC) = convertCharsToStrings(join(['"',DLC_name,filename_ext,file_suffix,'"'])); 

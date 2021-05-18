@@ -1,4 +1,7 @@
 function[template,wind_labels] = write_templates(template_name,i_DLC,DLC_cell,row_xls,col_start,template,v_combo,v_index)
+%WRITE_TEMPLATES Fills the template structures with the specified
+%simulation parameters
+
 
     %% 2. Write values in templates  
 

@@ -1,4 +1,8 @@
 function [DLC_cell,config,templates] = read_config(xls_name)
+%READ_CONFIG Loads the DLC_List sheet as a cell array (DLC_cell). 
+%Saves required path configurations in the config structure.
+%Loads the template input files into the templates structure
+
 %% load configuration and template-files
 
 if ~exist('xls_name', 'var') || isempty(xls_name)

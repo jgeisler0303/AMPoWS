@@ -1,6 +1,9 @@
 function [] = create_script(command,files,name)
-
-% create .bat/.sh -file to run multiple FAST simulations
+%CREATE_SCRIPT Creates .bat/.sh -file (depending on OS) to run multiple FAST simulations.
+%
+%command: defines which module is to be called (e.g turbsim or openfast)
+%files: specifies the input-files for the module
+%name: name of generated the .bat/.sh file
 
 if isunix % Linux-System -> shell-script
    filename = join([name,'.sh']) ;

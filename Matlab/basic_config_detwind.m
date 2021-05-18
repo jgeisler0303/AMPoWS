@@ -1,4 +1,7 @@
 function dlc_cell = basic_config_detwind(dlc_cell,row) 
+%BASIC_CONFIG_DETWIND Creates IEC-wind-specific labels from basic parameter columns in
+%configuration sheet by extending dlc_cell with necessary columns.
+
 
 wind_slope = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Slope',true)};
 turbclass = dlc_cell{row,find_label_or_create(dlc_cell,'Turb-Class',true)};
