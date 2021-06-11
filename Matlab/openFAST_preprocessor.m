@@ -1,13 +1,19 @@
+function openFAST_preprocessor(conig_file_name)
+if ~exist('conig_file_name', 'var')
+    if exist('openFAST_config.xlsx', 'file')
+        conig_file_name= 'openFAST_config.xlsx';
+    else
+        [file, path]= uigetfile('*.xls;*.xlsx', 'Select Excel configuration file', 'openFAST_config.xlsx');
+        conig_file_name= fullfile(path, file);
+    end
+end
+
 %% 1. load configuration and template-files
 
-[DLC_cell,config,templates] = read_config('openFAST_config.xlsx');
+[DLC_cell,config,templates] = read_config(conig_file_name);
 % create target directories if they don't exist yet
 [~, ~]= mkdir(config.sim_path); % suppress warning, if directory exists
 [~, ~]= mkdir(config.wind_path); % suppress warning, if directory exists
-
-% make path to wind directory absolute
-old_dir= cd(config.wind_path);
-config.wind_path= cd(old_dir);
 
 % copy all sub-file that don't need templating into the target directory
 templates= copy_sub_files(templates, config);
@@ -93,10 +99,10 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
 
     % create script for turbsim 
     if turbsim_trig
-        create_script('turbsim',turbsim_files,fullfile(config.wind_path,DLC_name));
+        create_script('turbsim',turbsim_files,fullfile(config.wind_path,DLC_name), '.bst');
     end
     
     % create script for FAST
-    create_script('openfast',main_files,fullfile(config.sim_path,DLC_name));
+    create_script('openfast',main_files,fullfile(config.sim_path,DLC_name), '.outb');
     
 end

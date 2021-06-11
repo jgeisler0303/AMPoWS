@@ -15,10 +15,12 @@ if strcmp(template_name,'maininput')
 % write wind file name to inflowwind
 elseif strcmp(template_name,'inflowwind') && turbsim_trig
     turbname = strip(convertStringsToChars(files.turbsim(i_DLC)),'"');
-    template.Val(find(strcmp(template.Label,'FileName_BTS')==1))={strrep(convertCharsToStrings(join(['"',config.wind_path,'/',turbname])),'inp','bts')};
+    rel_wind_path= make_relative_path(config.sim_path, config.wind_path);
+    template.Val(find(strcmp(template.Label,'FileName_BTS')==1))={strrep(['"', rel_wind_path,turbname '"'],'inp','bts')};
 elseif strcmp(template_name,'inflowwind') && ~turbsim_trig
     uni_wind_name = strip(convertStringsToChars(files.iecwind(i_DLC)),'"');
-    template.Val(find(strcmp(template.Label,'Filename_Uni')==1))={convertCharsToStrings(join(['"',config.wind_path,'/',uni_wind_name,'"']))};
+    rel_wind_path= make_relative_path(config.sim_path, config.wind_path);
+    template.Val(find(strcmp(template.Label,'Filename_Uni')==1))={['"', rel_wind_path, uni_wind_name, '"']};
 end
 
 % Generate files
