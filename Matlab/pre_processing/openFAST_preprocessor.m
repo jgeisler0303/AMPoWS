@@ -1,14 +1,20 @@
 function openFAST_preprocessor(conig_file_name)
+
+addpath(fileparts(mfilename('fullpath')))
+
 if ~exist('conig_file_name', 'var')
-    if exist('openFAST_config.xlsx', 'file')
-        conig_file_name= 'openFAST_config.xlsx';
-    else
-        [file, path]= uigetfile('*.xls;*.xlsx', 'Select Excel configuration file', 'openFAST_config.xlsx');
-        conig_file_name= fullfile(path, file);
-    end
+    [file, path]= uigetfile('*.xls;*.xlsx', 'Select Excel configuration file', 'openFAST_config.xlsx');
+    conig_file_name= fullfile(path, file);
 end
 
 %% 1. load configuration and template-files
+start_dir= pwd;
+cleanupObj = onCleanup(@()cd(start_dir));
+
+config_path= fileparts(conig_file_name);
+if ~isempty(config_path)
+    cd(config_path)
+end
 
 [DLC_cell,config,templates] = read_config(conig_file_name);
 % create target directories if they don't exist yet
