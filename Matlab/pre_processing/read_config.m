@@ -26,6 +26,17 @@ config.inflowwind_path = config_cell{6,2} ;
 config.turbsim_path = config_cell{7,2} ;
 config.iecwind_path = config_cell{8,2};
 
+config.CutinWind= config_cell{13,2};
+config.RatedWind= config_cell{14,2};
+config.CutoutWind= config_cell{15,2};
+
+[idx, DLC_cell] = find_label_or_create(DLC_cell, '{CutinWind}', false);
+[DLC_cell{2:end, idx}] = deal(config.CutinWind);
+[idx, DLC_cell] = find_label_or_create(DLC_cell, '{RatedWind}', false);
+[DLC_cell{2:end, idx}] = deal(config.RatedWind);
+[idx, DLC_cell] = find_label_or_create(DLC_cell, '{CutoutWind}', false);
+[DLC_cell{2:end, idx}] = deal(config.CutoutWind);
+
 % load templates of FAST- Inputfiles
 templates.elastodyn = FAST2Matlab(config_cell{3,2});
 templates.servodyn = FAST2Matlab(config_cell{4,2});
@@ -38,3 +49,12 @@ templates.iecwind = gen_iec_template;
 % load templates of FAST- Inputfiles
 templates.inflowwind = FAST2Matlab(config_cell{6,2});
 templates.maininput = FAST2Matlab(config_cell{2,2});
+
+% add some turbine geometry to the configuration
+[idx, DLC_cell] = find_label_or_create(DLC_cell, '{D_Rotor}', false);
+[DLC_cell{2:end, idx}] = deal(num2str(2*GetFASTPar(templates.elastodyn, 'TipRad')));
+
+[idx, DLC_cell] = find_label_or_create(DLC_cell, '{Hub_Height}', false);
+Hub_Height= GetFASTPar(templates.elastodyn, 'TowerHt') + GetFASTPar(templates.elastodyn, 'TowerBsHt') + GetFASTPar(templates.elastodyn, 'Twr2Shft') + sind(GetFASTPar(templates.elastodyn, 'ShftTilt'))*GetFASTPar(templates.elastodyn, 'OverHang');
+[DLC_cell{2:end, idx}] = deal(num2str(Hub_Height));
+

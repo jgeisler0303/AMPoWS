@@ -5,6 +5,7 @@ function [dlc_cell, turbsim_trig] = wind_config_IEC(dlc_cell,row)
 turbsim_trig= false;
 
 wind_slope = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Slope',true)};
+windclass = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Class',true)};
 turbclass = dlc_cell{row,find_label_or_create(dlc_cell,'Turb-Class',true)};
 shearexp = dlc_cell{row,find_label_or_create(dlc_cell,'Shear-Exp',true)};
 time_trans = dlc_cell{row,find_label_or_create(dlc_cell,'Transient-Event-Time',true)};
@@ -39,4 +40,6 @@ dlc_cell{row,idx} = ieccond;
 [idx,dlc_cell] = find_label_or_create(dlc_cell,'{Turb_Class}',false);
 dlc_cell{row,idx} = turbclass;
 
+[idx,dlc_cell] = find_label_or_create(dlc_cell,'{Wind_Class}',false);
+dlc_cell{row,idx} = windclass;
 

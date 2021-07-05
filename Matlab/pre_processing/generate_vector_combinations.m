@@ -1,4 +1,4 @@
-function [v_combo, v_index] = generate_vector_combinations(DLC_cell,row_xls, col_start)
+function [v_combo, v_index] = generate_vector_combinations(DLC_cell, row_xls, col_start, config)
 %GENERATE_VECTOR_COMBINATIONS Generates a matrix (v_combo) with all
 %possible combinations of the simulation parameters entered as a vector. In
 %addition the associated column index for each vector entry is stored in
@@ -9,6 +9,11 @@ function [v_combo, v_index] = generate_vector_combinations(DLC_cell,row_xls, col
 v_combo = [1];        % intialize vector combination matrix to use allcombos function
 v_index = [];         % storage for column indices of vectors in DLC_cell
 struct_id = struct(); % storage for vectors with identifiers
+
+% allow to define Vektor with respect to reference wind conditions
+v_i= config.CutinWind;
+v_r= config.RatedWind;
+v_o= config.CutoutWind;
 
 % loop over each "non-basic" column
 for col_xls = col_start:size(DLC_cell,2)
@@ -24,7 +29,15 @@ for col_xls = col_start:size(DLC_cell,2)
         % process vectors only; try next column
     end
 
-
+    % special treatment for IEC wind conditions: a list of conditions
+    % separated by colons
+    if strcmp(DLC_cell{1, col_xls}, '{IEC-condition}')
+        n_iec= sum(DLC_cell{row_xls, col_xls}==':')+1;
+        if n_iec>1
+            v_combo = allcombos(v_combo, 1:n_iec); % combination of vectors
+            v_index = [v_index, col_xls]; % save row number of rows with vector            
+        end
+    end
 
     % sort all vectors WITH identifiers by used identifier
     if ischar(DLC_cell{row_xls,col_xls}) && contains(DLC_cell{row_xls,col_xls},'<') % check if identifier is used

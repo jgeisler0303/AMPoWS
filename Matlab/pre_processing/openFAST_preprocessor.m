@@ -34,6 +34,9 @@ for template_name = (convertCharsToStrings(fieldnames(templates)))'
     path_field= join([convertStringsToChars(template_name),'_path']);
     DLC_Set_Info.templates.(path_field)= config.(path_field);
 end
+DLC_Set_Info.CutinWind= config.CutinWind;
+DLC_Set_Info.RatedWind= config.RatedWind;
+DLC_Set_Info.CutoutWind= config.CutoutWind;
 
 % loop over each row in DLC config 
 for row_xls = 2:size(DLC_cell,1) % first row contains labels
@@ -60,7 +63,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
     DLC_Set_Info.DLC(row_xls-1).turbsim_trig= turbsim_trig;
 
     % Identify all vectors in row & save all possible combinations
-    [v_combo, v_index] = generate_vector_combinations(DLC_cell, row_xls, col_start);   
+    [v_combo, v_index] = generate_vector_combinations(DLC_cell, row_xls, col_start, config);   
             
     if isempty(v_combo)
         col_DLC = 1;    % no vectors: no combinations -> only 1 cycle of write & generate   

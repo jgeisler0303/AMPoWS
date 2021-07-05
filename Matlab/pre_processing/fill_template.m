@@ -16,11 +16,19 @@ for col_xls = col_start:size(DLC_cell,2)
         idx_v = find(v_index == col_xls);  % read vector elements from v_combo
 
         if ~isempty(idx_v)
-            template.Val(idx)={v_combo(idx_v,i_DLC)};
-
+            % special treatment for IEC wind conditions: a list of conditions
+            % separated by colons
+            if strcmp(DLC_cell{1, col_xls}, '{IEC-condition}')
+                iec_conds= split(DLC_cell(row_xls, col_xls), ':');
+                template.Val(idx)={iec_conds{v_combo(idx_v, i_DLC)}};
+            else
+                template.Val(idx)={v_combo(idx_v,i_DLC)};
+            end
+            
             if strcmp(template_name,'turbsim') || strcmp(template_name,'iecwind')
                 wind_labels(end+1).label = DLC_cell{1,col_xls};
-                wind_labels(end).value = v_combo(idx_v,i_DLC);
+                val= template.Val(idx);
+                wind_labels(end).value = val{1};
             end
 
         % read single elements from DLC_cell

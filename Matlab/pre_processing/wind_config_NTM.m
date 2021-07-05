@@ -7,6 +7,7 @@ function [dlc_cell, turbsim_trig] = wind_config_NTM(dlc_cell,row)
 wind_speed = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Speed',true)} ;
 duration = dlc_cell{row,find_label_or_create(dlc_cell,'Duration',true)};
 seed = dlc_cell{row,find_label_or_create(dlc_cell,'Seed',true)};
+turbclass = dlc_cell{row,find_label_or_create(dlc_cell,'Turb-Class',true)};
 
 % search for URef label (windspeed in TurbSim-Inputfile)
 [idx,dlc_cell] = find_label_or_create(dlc_cell,'URef',false) ;
@@ -15,6 +16,9 @@ dlc_cell{row,idx}=wind_speed;  % write windspeed
 % search for WindType label (Type of inputfile for inflowwind.dat-file)
 [idx,dlc_cell] = find_label_or_create(dlc_cell,'WindType',false) ;
 dlc_cell{row,idx}='3' ; 
+
+[idx,dlc_cell] = find_label_or_create(dlc_cell,'IECturbc',false) ;
+dlc_cell{row,idx} = turbclass; 
 
 % search for IEC_WindType label (TurbModel Turbsim-Inputfile)
 [idx,dlc_cell] = find_label_or_create(dlc_cell,'IEC_WindType',false) ;
