@@ -17,6 +17,7 @@ config_cell=readcell(xls_name,'Sheet','config'); % path to files from Excel-shee
 
 config.sim_path=config_cell{10,2}; % location of simulation directory
 config.wind_path=config_cell{11,2}; % location of wind directory
+
 config.maininput_path = config_cell{2,2} ;
 config.elastodyn_path = config_cell{3,2};
 config.servodyn_path = config_cell{4,2} ;

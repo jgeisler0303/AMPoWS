@@ -1,4 +1,4 @@
-function [dlc_cell, turbsim_trig] = basic_config_ETM(dlc_cell,row) 
+function [dlc_cell, turbsim_trig] = wind_config_ETM(dlc_cell,row) 
 %BASIC_CONFIG_ETM Creates specific labels for the Extreme-Turbulance-Model simulation 
 %(according to IEC61400) from basic parameter columns in configuration 
 %sheet by extending dlc_cell with necessary columns.

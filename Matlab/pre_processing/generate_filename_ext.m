@@ -8,7 +8,7 @@ filename_ext = '_';              % initialize filename extension
 erase_label=["(" , ")"] ;        % elements to erase from label to write in filename
 
 % create wind file extensions
-if strcmp(template_name,'turbsim') | strcmp(template_name,'iecwind')
+if strcmp(template_name,'turbsim') || strcmp(template_name,'iecwind')
     if ~isempty(wind_labelnames)
         for i = 1:length(wind_labelnames)
             % load label name and erase unallowed characters
