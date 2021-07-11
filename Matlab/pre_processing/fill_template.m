@@ -1,36 +1,34 @@
-function[template, wind_labels, variations] = fill_template(template_name,i_DLC,DLC_cell,row_xls,col_start,template,v_combo,v_index)
 %WRITE_TEMPLATES Fills the template structures with the specified
-%simulation parameters
+%   simulation parameters
+%
+% Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
+% Copyright (c) 2021 Jens Geisler
 
-variations= struct('label',{},'value',{});
+function[template, variations] = fill_template(i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index)
 
-% struct to save labelnames for filename_generation
-wind_labels = struct('label',{},'value',{});
+variations= struct('label', {}, 'value', {}, 'multi', {});
 
 % loop over each "non-basic" column
 for col_xls = col_start:size(DLC_cell,2)
     % find location of used label in current input file
-    idx = find(strcmp(template.Label,DLC_cell{1,col_xls}));
+    idx = find(strcmpi(template.Label, DLC_cell{1,col_xls}));
     % check if label exists
     if ~isempty(idx)   
         idx_v = find(v_index == col_xls);  % read vector elements from v_combo
-
+        varied= true;
+        multi_vary= false;
+        
         if ~isempty(idx_v)
+            multi_vary= true;
             % special treatment for IEC wind conditions: a list of conditions
             % separated by colons
-            if strcmp(DLC_cell{1, col_xls}, '{IEC-condition}')
-                iec_conds= split(DLC_cell(row_xls, col_xls), ':');
-                template.Val(idx)={iec_conds{v_combo(idx_v, i_DLC)}};
+            if strcmp(DLC_cell{1, col_xls}, '{uni-wind-param}')
+                uni_wind_param= split(DLC_cell(row_xls, col_xls), ':');
+                template.Val(idx)={uni_wind_param{v_combo(idx_v, i_DLC)}};
             else
                 template.Val(idx)={v_combo(idx_v,i_DLC)};
             end
             
-            if strcmp(template_name,'turbsim') || strcmp(template_name,'iecwind')
-                wind_labels(end+1).label = DLC_cell{1,col_xls};
-                val= template.Val(idx);
-                wind_labels(end).value = val{1};
-            end
-
         % read single elements from DLC_cell
         elseif ischar(DLC_cell{row_xls,col_xls}) 
             if isempty(str2num(DLC_cell{row_xls,col_xls}))
@@ -38,9 +36,16 @@ for col_xls = col_start:size(DLC_cell,2)
             else
                 template.Val(idx) = DLC_cell(row_xls,col_xls);
             end       
+        elseif ~ismissing(DLC_cell{row_xls,col_xls})
+            template.Val(idx) = DLC_cell(row_xls,col_xls);
+        else
+            varied= false;
         end
         
-        variations(end+1).label= DLC_cell{1,col_xls};
-        variations(end).value= template.Val(idx);
+        if varied
+            variations(end+1).label= DLC_cell{1,col_xls};
+            variations(end).value= template.Val(idx);
+            variations(end).multi= multi_vary;
+        end
     end 
 end

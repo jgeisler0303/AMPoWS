@@ -1,9 +1,12 @@
-function [v_combo, v_index] = generate_vector_combinations(DLC_cell, row_xls, col_start, config)
 %GENERATE_VECTOR_COMBINATIONS Generates a matrix (v_combo) with all
-%possible combinations of the simulation parameters entered as a vector. In
-%addition the associated column index for each vector entry is stored in
-%v_index.
+%   possible combinations of the simulation parameters entered as a vector. In
+%   addition the associated column index for each vector entry is stored in
+%   v_index.
+%
+% Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
+% Copyright (c) 2021 Jens Geisler
 
+function [DLC_cell, v_combo, v_index] = generate_vector_combinations(DLC_cell, row_xls, col_start, config)
 %% Identify all vectors in row & save all possible combinations
 
 v_combo = [1];        % intialize vector combination matrix to use allcombos function
@@ -11,13 +14,20 @@ v_index = [];         % storage for column indices of vectors in DLC_cell
 struct_id = struct(); % storage for vectors with identifiers
 
 % allow to define Vektor with respect to reference wind conditions
-v_i= config.CutinWind;
-v_r= config.RatedWind;
-v_o= config.CutoutWind;
+v_i= str2double(config.CutinWind);
+v_r= str2double(config.RatedWind);
+v_o= str2double(config.CutoutWind);
 
 % loop over each "non-basic" column
 for col_xls = col_start:size(DLC_cell,2)
-
+    if strcmp(DLC_cell{row_xls,col_xls}, 'v_i')
+        DLC_cell{row_xls,col_xls}= v_i;
+    elseif strcmp(DLC_cell{row_xls,col_xls}, 'v_r')
+        DLC_cell{row_xls,col_xls}= v_r;
+    elseif strcmp(DLC_cell{row_xls,col_xls}, 'v_o')
+        DLC_cell{row_xls,col_xls}= v_o;
+    end
+    
     % create all combinations of vectors WITHOUT indentifiers
     try  
         e = eval(DLC_cell{row_xls,col_xls}); % read vector from char
@@ -29,9 +39,9 @@ for col_xls = col_start:size(DLC_cell,2)
         % process vectors only; try next column
     end
 
-    % special treatment for IEC wind conditions: a list of conditions
+    % special treatment for uni wind conditions: a list of conditions
     % separated by colons
-    if strcmp(DLC_cell{1, col_xls}, '{IEC-condition}')
+    if strcmp(DLC_cell{1, col_xls}, '{uni-wind-param}')
         n_iec= sum(DLC_cell{row_xls, col_xls}==':')+1;
         if n_iec>1
             v_combo = allcombos(v_combo, 1:n_iec); % combination of vectors

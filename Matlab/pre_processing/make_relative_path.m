@@ -1,3 +1,6 @@
+
+% Copyright (c) 2021 Jens Geisler
+
 function rp= make_relative_path(p1, p2)
 
 p1= char(p1);

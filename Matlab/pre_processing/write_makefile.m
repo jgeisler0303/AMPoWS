@@ -1,3 +1,6 @@
+
+% Copyright (c) 2021 Jens Geisler
+
 function write_makefile(sim_path, DLC_Set_Info)
 
 filename= fullfile(sim_path, 'makefile');

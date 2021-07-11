@@ -1,13 +1,15 @@
-function [idx,dlc_cell] = find_label_or_create(dlc_cell,label,find_only)
 %FIND_LABEL_OR_CREATE Searches for a specific label in the table and optionally creates it if it
-%does not exist. The function returns the customised table as well as the
-%name of the label searched for.
+%   does not exist. The function returns the customised table as well as the
+%   name of the label searched for.
 %
-%dlc_cell: read-in configuration table
-%label: label that is searched for / is added
-%find_only : if true label is only searched and not added to table
+%   dlc_cell: read-in configuration table
+%   label: label that is searched for / is added
+%   find_only : if true label is only searched and not added to table
+%
+% Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
+% Copyright (c) 2021 Jens Geisler
 
-
+function [idx,dlc_cell] = find_label_or_create(dlc_cell,label,find_only)
 % search for label
 idx = find(strcmp(dlc_cell(1,:),label)) ;
 

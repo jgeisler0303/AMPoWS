@@ -1,5 +1,7 @@
+
+% Copyright (c) 2021 Jens Geisler
+
 function write_make_scripts(sim_path, wind_path, DLC_Set_Info)
-% create batch/shell -script
 all_main_files= [];
 all_turb_files= [];
 for i_DLC= 1:length(DLC_Set_Info.DLC)

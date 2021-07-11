@@ -1,3 +1,6 @@
+
+% Copyright (c) 2021 Jens Geisler
+
 function templates= copy_sub_files(templates, config)
 
 templates= copy_sub_file(templates, config, config.sim_path, 'maininput', 'BDBldFile(1)');

@@ -1,7 +1,10 @@
-function combo = allcombos (a,b)
 %ALLCOMBOS generates all possible combinations of the columns of two
-%matrices (a and b)
+%   matrices (a and b)
+%
+% Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
+% Copyright (c) 2021 Jens Geisler
 
+function combo = allcombos (a,b)
 combo = [];
 
 for i = 1:size(b,2)

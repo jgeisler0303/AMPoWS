@@ -16,7 +16,7 @@ True       SI UNITS (True=SI or False=ENGLISH)
 {RatedWind}       Rated wind speed, m/s or ft/s
 {CutoutWind}       Cut-out wind speed, m/s or ft/s
 !List of Conditions to generate (one per line)
-{IEC-condition}
+{uni-wind-param}
 
 
 

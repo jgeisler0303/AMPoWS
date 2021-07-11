@@ -1,7 +1,11 @@
+%WIND_CONFIG_NTM Creates specific labels for the Normal-Turbulance-Model simulation 
+%   (according to IEC61400) from basic parameter columns in configuration 
+%   sheet by extending dlc_cell with necessary columns.
+%
+% Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
+% Copyright (c) 2021 Jens Geisler
+
 function [dlc_cell, turbsim_trig] = wind_config_NTM(dlc_cell,row) 
-%BASIC_CONFIG_NTM Creates specific labels for the Normal-Turbulance-Model simulation 
-%(according to IEC61400) from basic parameter columns in configuration 
-%sheet by extending dlc_cell with necessary columns.
 
 
 wind_speed = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Speed',true)} ;

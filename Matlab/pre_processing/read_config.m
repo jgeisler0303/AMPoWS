@@ -1,8 +1,11 @@
-function [DLC_cell,config,templates] = read_config(xls_name)
 %READ_CONFIG Loads the DLC_List sheet as a cell array (DLC_cell). 
-%Saves required path configurations in the config structure.
-%Loads the template input files into the templates structure
+%   Saves required path configurations in the config structure.
+%   Loads the template input files into the templates structure
+%
+% Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
+% Copyright (c) 2021 Jens Geisler
 
+function [DLC_cell,config,templates] = read_config(xls_name)
 %% load configuration and template-files
 
 if ~exist('xls_name', 'var') || isempty(xls_name)
@@ -24,7 +27,7 @@ config.servodyn_path = config_cell{4,2} ;
 config.aerodyn_path = config_cell{5,2} ;
 config.inflowwind_path = config_cell{6,2} ;
 config.turbsim_path = config_cell{7,2} ;
-config.iecwind_path = config_cell{8,2};
+config.uni_wind_path = config_cell{8,2};
 
 config.CutinWind= config_cell{13,2};
 config.RatedWind= config_cell{14,2};
@@ -44,7 +47,6 @@ templates.aerodyn = FAST2Matlab(config_cell{5,2});
 
 % generate wind template structures
 templates.turbsim = FAST2Matlab(config_cell{7,2});
-templates.iecwind = gen_iec_template;
 
 % load templates of FAST- Inputfiles
 templates.inflowwind = FAST2Matlab(config_cell{6,2});

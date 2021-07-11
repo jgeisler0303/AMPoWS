@@ -1,5 +1,9 @@
-function template = gen_iec_template
-%GEN_IEC_TEMPLATE Generates template-structure for the IEC-wind module.
+%WIND_TEMPLATE_IEC Generates template-structure for the IEC-wind module.
+%
+% Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
+% Copyright (c) 2021 Jens Geisler
+
+function template = wind_template_IEC
 
 template = struct();
 template.Label = {
@@ -13,7 +17,7 @@ template.Label = {
     '{CutinWind}'
     '{RatedWind}'
     '{CutoutWind}'
-    '{IEC-condition}'
+    '{uni-wind-param}'
     };
 template.Val = cell(size(template.Label));
 

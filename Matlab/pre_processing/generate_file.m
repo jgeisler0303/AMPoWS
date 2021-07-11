@@ -1,27 +1,34 @@
-function generate_file(template_name, template, files, config, turbsim_trig, filename, i_DLC)
 %GENERATE_FILES Generates OpenFAST, iecwind and TurbSim input files.
+%
+% Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
+% Copyright (c) 2021 Jens Geisler
+
+function generate_file(template_name, template, files, config, turbsim_trig, filename, i_DLC, wind_type)
 
 template_path = config.(join([convertStringsToChars(template_name),'_path']));
 
 if strcmp(template_name,'maininput')
     % write file references to maininput file
-    template.Val(find(strcmp(template.Label,'AeroFile')))   = {files.aerodyn(i_DLC)};
-    template.Val(find(strcmp(template.Label,'EDFile')))     = {files.elastodyn(i_DLC)};
-    template.Val(find(strcmp(template.Label,'InflowFile'))) = {files.inflowwind(i_DLC)};
-    template.Val(find(strcmp(template.Label,'ServoFile')))  = {files.servodyn(i_DLC)};                   
+    template.Val(find(strcmpi(template.Label,'AeroFile')))   = {files.aerodyn(i_DLC)};
+    template.Val(find(strcmpi(template.Label,'EDFile')))     = {files.elastodyn(i_DLC)};
+    template.Val(find(strcmpi(template.Label,'InflowFile'))) = {files.inflowwind(i_DLC)};
+    template.Val(find(strcmpi(template.Label,'ServoFile')))  = {files.servodyn(i_DLC)};                   
 elseif strcmp(template_name,'inflowwind') && turbsim_trig
     % write wind file name to inflowwind
-    template.Val(find(strcmp(template.Label,'FileName_BTS')))= {strrep(files.turbsim(i_DLC),'inp','bts')};
+    template.Val(find(strcmpi(template.Label,'FileName_BTS')))= {strrep(files.turbsim(i_DLC),'inp','bts')};
 elseif strcmp(template_name,'inflowwind') && ~turbsim_trig
     % write wind file name to inflowwind
-    template.Val(find(strcmp(template.Label,'Filename_Uni')))= {files.iecwind(i_DLC)};
+    template.Val(find(strcmpi(template.Label,'Filename_Uni')))= {files.uni_wind(i_DLC)};
 end
 
 % Generate files
-if strcmp(template_name,'iecwind')
+if strcmp(template_name,'uni_wind')
     if ~turbsim_trig
-        % Generate deterministic iecwind
-        generate_iec_wind(template,template_path,filename);
+        wind_gen_script= join(['wind_gen','_',wind_type]);
+        if ~exist(wind_gen_script, 'file')
+            error('No generation script found for wind type "%s".', wind_type);
+        end
+        eval(join([wind_gen_script, '(template, template_path, filename);']));
     end
 elseif strcmp(template_name,'turbsim')
     % Generate turbsim input file if it has changed

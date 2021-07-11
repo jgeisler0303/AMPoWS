@@ -1,7 +1,8 @@
-function [dlc_cell, turbsim_trig] = wind_config_IEC(dlc_cell,row) 
-%BASIC_CONFIG_DETWIND Creates IEC-wind-specific labels from basic parameter columns in
-%configuration sheet by extending dlc_cell with necessary columns.
 
+% Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
+% Copyright (c) 2021 Jens Geisler
+
+function [dlc_cell, turbsim_trig] = wind_config_IEC(dlc_cell,row) 
 turbsim_trig= false;
 
 wind_slope = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Slope',true)};
@@ -33,7 +34,7 @@ dlc_cell{row,idx} = shearexp;
 dlc_cell{row,idx} = time_trans;
 
 % search for IEC-condition label (IECWind input)
-[idx,dlc_cell] = find_label_or_create(dlc_cell,'{IEC-condition}',false);
+[idx,dlc_cell] = find_label_or_create(dlc_cell,'{uni-wind-param}',false);
 dlc_cell{row,idx} = ieccond;
 
 % search for Wind Turbine class label (IECWind input)
