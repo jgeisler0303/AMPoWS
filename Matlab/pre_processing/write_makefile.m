@@ -38,7 +38,7 @@ for i_DLC= 1:length(DLC_Set_Info.DLC)
             out_file= strrep(DLC_Set_Info.DLC(i_DLC).simulation(i_sim).maininput.filename, '.fst', '.outb');
             turb_file= strrep(DLC_Set_Info.DLC(i_DLC).simulation(i_sim).turbsim.filename, '.inp', '.bts');
             
-            fprintf(output, '%s: %s\n\n', out_file, turb_file);
+            fprintf(output, '%s: %s\n\n', strrep(out_file, '\', '/'), strrep(turb_file, '\', '/'));
         end
     end
 end
@@ -56,7 +56,7 @@ fclose(output);
 function write_file_list(outfile, name, files)
 fprintf(outfile, 'SIM_FILES_%s:= \\\n', name);
 for i=1:length(files)           
-    fprintf(outfile, '\t%s', files(i));
+    fprintf(outfile, '\t%s', strrep(files(i), '\', '/')); % this strrep destroys backslashes in linux paths, but there is no easy way
     if i<length(files)
         fprintf(outfile, ' \\\n');
     else
