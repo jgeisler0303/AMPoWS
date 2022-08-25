@@ -42,14 +42,19 @@ config.CutoutWind= config_cell{15,2};
 
 % load templates of FAST- Inputfiles
 templates.elastodyn = FAST2Matlab(config_cell{3,2});
+templates.elastodyn= readOutSensors(templates.elastodyn, config_cell{17,2}, 'ElastoDyn');
+
 templates.servodyn = FAST2Matlab(config_cell{4,2});
+templates.servodyn= readOutSensors(templates.servodyn, config_cell{17,2}, 'ServoDyn');
 templates.aerodyn = FAST2Matlab(config_cell{5,2});
+templates.aerodyn= readOutSensors(templates.aerodyn, config_cell{17,2}, 'AeroDyn');
 
 % generate wind template structures
 templates.turbsim = FAST2Matlab(config_cell{7,2});
 
 % load templates of FAST- Inputfiles
 templates.inflowwind = FAST2Matlab(config_cell{6,2});
+templates.inflowwind= readOutSensors(templates.inflowwind, config_cell{17,2}, 'InflowWind');
 templates.maininput = FAST2Matlab(config_cell{2,2});
 
 % add some turbine geometry to the configuration
@@ -60,3 +65,10 @@ templates.maininput = FAST2Matlab(config_cell{2,2});
 Hub_Height= GetFASTPar(templates.elastodyn, 'TowerHt') + GetFASTPar(templates.elastodyn, 'TowerBsHt') + GetFASTPar(templates.elastodyn, 'Twr2Shft') + sind(GetFASTPar(templates.elastodyn, 'ShftTilt'))*GetFASTPar(templates.elastodyn, 'OverHang');
 [DLC_cell{2:end, idx}] = deal(num2str(Hub_Height));
 
+function template= readOutSensors(template, list, module)
+if exist(list, 'file')
+    OutSensors_cell = readcell(list , 'Sheet', module);
+    idx= strcmpi(OutSensors_cell(:, 1), 'x');
+    template.OutList= {OutSensors_cell(idx, 2)};
+    template.OutListComments=  {OutSensors_cell(idx, 4)};
+end
