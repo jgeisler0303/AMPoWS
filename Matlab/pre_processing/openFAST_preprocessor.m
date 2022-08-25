@@ -124,7 +124,16 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
             filename_ext = generate_filename_ext(variations, wind_type);
             
             % compose filename
-            if strcmp(template_name, 'iecwind') || strcmp(template_name, 'turbsim')
+            if strcmp(template_name, 'uni_wind') && any(strcmp(template.Label, '{bts_file_template}'))
+                % special treatment of file name of already generated bts files
+                input_file_name= sprintf(template.Val{find(strcmpi(template.Label, '{bts_file_template}'), 1)}, template.Val{find(strcmpi(template.Label, 'URef'), 1)});
+                input_file_name= strrep(input_file_name, '"', '');
+                if ~endsWith(input_file_name, '.bts')
+                    input_file_name= [input_file_name '.bts'];
+                end
+                input_file_name= string(input_file_name);
+                rel_file_path= append(rel_wind_path, input_file_name);
+            elseif strcmp(template_name, 'iecwind') || strcmp(template_name, 'turbsim')
                 input_file_name= append(strrep(DLC_cell{row_xls, find_label_or_create(DLC_cell,'Wind-Type',true)}, ':', '_'), '_', filename_ext, file_suffix);
                 rel_file_path= append(rel_wind_path, input_file_name);
             else

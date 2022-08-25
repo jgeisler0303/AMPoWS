@@ -1,4 +1,4 @@
-%WIND_GEN_IEC Generates .bts-file by running IEC-wind.
+%WIND_GEN_IEC Generates .wnd-file by running IEC-wind.
 %   Fills template-input-file (template_file) with the parameters set in the
 %   corresponding template-structure (template).
 %   Runs the IECWind module with the filled input file and moves the generated

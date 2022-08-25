@@ -61,7 +61,11 @@ else
         template.Val(find(strcmpi(template.Label,'FileName_BTS')))= {strrep(files.turbsim(i_DLC),'inp','bts')};
     elseif strcmp(template_name,'inflowwind') && ~turbsim_trig
         % write wind file name to inflowwind
-        template.Val(find(strcmpi(template.Label,'Filename_Uni')))= {files.uni_wind(i_DLC)};
+        if asdouble(template.Val{find(strcmpi(template.Label,'WindType'), 1)})==2
+            template.Val(find(strcmpi(template.Label,'Filename_Uni')))= {files.uni_wind(i_DLC)};
+        else
+            template.Val(find(strcmpi(template.Label,'FileName_BTS')))= {files.uni_wind(i_DLC)};
+        end
     end
     % Generate other input file
     template_path = config.(join([convertStringsToChars(template_name),'_path']));

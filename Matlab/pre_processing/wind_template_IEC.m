@@ -1,7 +1,6 @@
-%WIND_TEMPLATE_IEC Generates template-structure for the IEC-wind module.
+%WIND_TEMPLATE_IEC Generates template-structure for the BTS-wind module.
 %
-% Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
-% Copyright (c) 2021 Jens Geisler
+% Copyright (c) 2022 Jens Geisler
 
 function template = wind_template_IEC
 
