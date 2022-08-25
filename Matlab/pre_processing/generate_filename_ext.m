@@ -11,7 +11,7 @@ function filename_ext = generate_filename_ext(variations, wind_type)
 filename_ext = "";              % initialize filename extension
 erase_label=["(" , ")", "{", "}"] ;        % elements to erase from label to write in filename
 for i = 1:length(variations)
-    if ~variations(i).multi, continue, end
+    if ~variations(i).group1st, continue, end % TODO: this is not ideal, better would be to use the group label
     
     f_label = erase(variations(i).label, erase_label);
     f_value = strrep(strrep(string(variations(i).value),'.','p'), '-', 'neg');

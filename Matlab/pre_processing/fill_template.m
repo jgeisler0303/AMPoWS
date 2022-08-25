@@ -4,9 +4,10 @@
 % Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
 % Copyright (c) 2021 Jens Geisler
 
-function[template, variations] = fill_template(i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index)
+function[template, variations] = fill_template(i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index, g_index)
 
-variations= struct('label', {}, 'value', {}, 'multi', {});
+variations= struct('label', {}, 'value', {}, 'multi', {}, 'group1st', {});
+group1st= diff([0 g_index]);
 
 % loop over each "non-basic" column
 for col_xls = col_start:size(DLC_cell,2)
@@ -33,7 +34,11 @@ for col_xls = col_start:size(DLC_cell,2)
         elseif ischar(DLC_cell{row_xls,col_xls}) 
             val= str2num(DLC_cell{row_xls,col_xls});
             if isempty(val)
-                template.Val{idx} = append('"',DLC_cell{row_xls,col_xls},'"'); % add " " to string elements
+                if DLC_cell{row_xls,col_xls}(1)~='"'
+                    template.Val{idx} = append('"',DLC_cell{row_xls,col_xls},'"'); % add " " to string elements
+                else
+                    template.Val{idx} = DLC_cell{row_xls,col_xls}; % add " " to string elements
+                end                    
             else
                 template.Val{idx} = num2str(val);
             end       
@@ -47,6 +52,11 @@ for col_xls = col_start:size(DLC_cell,2)
             variations(end+1).label= DLC_cell{1,col_xls};
             variations(end).value= template.Val(idx);
             variations(end).multi= multi_vary;
+            if multi_vary
+                variations(end).group1st= group1st(idx_v);
+            else
+                variations(end).group1st= false;
+            end
         end
     end 
 end

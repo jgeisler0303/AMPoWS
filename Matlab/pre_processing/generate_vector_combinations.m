@@ -6,11 +6,12 @@
 % Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
 % Copyright (c) 2021 Jens Geisler
 
-function [DLC_cell, v_combo, v_index] = generate_vector_combinations(DLC_cell, row_xls, col_start, config)
+function [DLC_cell, v_combo, v_index, g_index] = generate_vector_combinations(DLC_cell, row_xls, col_start, config)
 %% Identify all vectors in row & save all possible combinations
 
 v_combo = [1];        % intialize vector combination matrix to use allcombos function
 v_index = [];         % storage for column indices of vectors in DLC_cell
+g_index = 0;         % variation group number
 struct_id = struct(); % storage for vectors with identifiers
 
 % allow to define Vektor with respect to reference wind conditions
@@ -34,6 +35,7 @@ for col_xls = col_start:size(DLC_cell,2)
         if isvector(e) && numel(e)>1      % check if element is vector with more than one element
             v_combo = allcombos(v_combo,e); % combination of vectors
             v_index = [v_index, col_xls]; % save row number of rows with vector
+            g_index(end+1)= g_index(end) + 1;
         end
     catch
         % process vectors only; try next column
@@ -46,6 +48,7 @@ for col_xls = col_start:size(DLC_cell,2)
         if n_iec>1
             v_combo = allcombos(v_combo, 1:n_iec); % combination of vectors
             v_index = [v_index, col_xls]; % save row number of rows with vector            
+            g_index(end+1)= g_index(end) + 1;
         end
     end
 
@@ -72,8 +75,11 @@ end
 % create combinations of ALL vectors 
 ids = fieldnames(struct_id);   % check if struct contains identifiers 
 for idx = 1:length(ids)
-   v_combo = allcombos(v_combo, struct_id.(ids{idx})(:,2:end));    % combine identifier-vectors with other vectors
-   v_index = [v_index, (struct_id.(ids{idx})(:,1))'];            % save columns of identifier-vectors
+   v_combo = allcombos(v_combo, struct_id.(ids{idx})(:,2:end));  % combine identifier-vectors with other vectors
+   groups= (struct_id.(ids{idx})(:,1))';
+   v_index = [v_index, groups];            % save columns of identifier-vectors
+   g_index = [g_index, (g_index(end)+1)*ones(size(groups))];
 end
 
 v_combo = v_combo(2:end,:);    % erase initial value of v_combo
+g_index = g_index(2:end);

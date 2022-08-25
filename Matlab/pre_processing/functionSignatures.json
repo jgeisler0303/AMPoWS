@@ -1,0 +1,11 @@
+{
+
+"openFAST_preprocessor":
+{
+    "inputs":
+    [
+        {"name":"conig_file_name", "kind":"required", "type":[["filepath=*.xlsx"], ["folderpath"]]}
+    ]
+}
+
+}

@@ -67,7 +67,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
     DLC_Set_Info.DLC(row_xls-1).turbsim_trig= turbsim_trig;
 
     % Identify all vectors in row & save all possible combinations
-    [DLC_cell, v_combo, v_index] = generate_vector_combinations(DLC_cell, row_xls, col_start, config);   
+    [DLC_cell, v_combo, v_index, g_index] = generate_vector_combinations(DLC_cell, row_xls, col_start, config);   
             
     if isempty(v_combo)
         col_DLC = 1;    % no vectors: no combinations -> only 1 cycle of write & generate   
@@ -111,7 +111,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
         for i_DLC = col_DLC
             %% 2. Write values in templates  
             [template, variations] = ...
-                fill_template(i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index) ;
+                fill_template(i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index, g_index) ;
 
             if strcmp(template_name, 'inflowwind')
                 variations= joinVariations(DLC_Set_Info.DLC(row_xls-1).simulation(i_DLC), {'uni_wind', 'turbsim'});

@@ -1,5 +1,6 @@
 Matlab/pre_processing/iecwind
 examples/generated/
+slprj
 *.~lock*
 *.asv
 *.dll
