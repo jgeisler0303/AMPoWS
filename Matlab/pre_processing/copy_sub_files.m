@@ -34,7 +34,7 @@ templates= copy_sub_file(templates, config, config.sim_path, 'servodyn', 'DLL_In
 
 templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'UserFile');
 templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'ProfileFile');
-templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'CTEventFile');
+% templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'CTEventFile'); % this is not a file
 
 
 function templates= copy_sub_file(templates, config, target, template, VarName)
@@ -53,5 +53,9 @@ if exist(src, 'file')
     
     QFileName= ['"' FileName Ext '"'];
 else
-    QFileName= '"unknown"';
+    if isempty(src) || any(strcmpi(strrep(src, '"', ''), {'UNUSED', 'UNKNOWN'}))
+        QFileName= '"unknown"';
+    else
+        error('Could not find file %s to copy to the destination %s', src, target)
+    end
 end

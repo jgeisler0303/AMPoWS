@@ -30,7 +30,14 @@ fclose(output);
 
 
 %generate .wnd file
-[res, msg]= system('iecwind');
+if ~exist('iecwind', 'file')
+    error('Program iecwind not found. Please download it from https://github.com/BecMax/IECWind and place it in the AMPoWS preprocessing directory.')
+end
+if ispc
+    [res, msg]= system(['set path=' getenv('PATH') ' & iecwind.exe']);
+else
+    [res, msg]= system('iecwind');
+end
 
 if res~=0
     error('iecwind terminated with message: "%s"', msg);

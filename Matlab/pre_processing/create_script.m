@@ -11,7 +11,9 @@ function [] = create_script(command, files, name)
 
 filename= join([name,'.sh']);
 write_script(filename, '#!/bin/bash', command, files)
-fileattrib(filename,'+x')
+if ~ispc
+    fileattrib(filename,'+x')
+end
 
 write_script(join([name,'.bat']), '', command, files)
 
