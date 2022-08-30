@@ -90,14 +90,14 @@ if fid > 0
         %--------------------
         %write the grid points
         %--------------------
-        v_= repmat(permute(v(it, :, :, :), [2, 3, 4, 1]), nv, 1);
+        v_= reshape(permute(v(it, :, :, :), [2, 3, 4, 1]), nv, 1);
         fwrite( fid, v_, fileFmt ); % write the velocity components for one time step
 
         %---------------------
         %write the tower points
         %---------------------
         if nvTwr > 0
-            v_= repmat(permute(vt(it, :, :), [2, 3, 1]), nvTwr, 1);
+            v_= reshape(permute(vt(it, :, :), [2, 3, 1]), nvTwr, 1);
             fwrite( fid, v_, fileFmt ); % write the velocity components for the tower
         end
     end %it

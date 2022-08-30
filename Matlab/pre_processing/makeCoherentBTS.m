@@ -1,4 +1,4 @@
-function makeCoherentBTS(file_names)
+function makeCoherentBTS(file_names, radius)
 if iscell(file_names)
     for i= 1:length(file_names)
         makeCoherentBTS(file_names{i})
@@ -8,7 +8,14 @@ end
 
 [velocity, twrVelocity, y, z, ~, ~, ~, ~, ~, dt, zHub, z1,mffws]= readfile_BTS(file_names);
 
-velocity= mean(mean(velocity, 3), 4);
+[Y, Z]= meshgrid(y, z);
+if exist('radius', 'var') && ~isempty(radius)
+    i_rot= (Y.^2+(Z-zHub).^2) <= radius^2;
+else
+    i_rot= true(size(Y));
+end
+velocity= reshape(velocity, size(velocity, 1), 3, size(velocity, 3)*size(velocity, 4));
+velocity= mean(velocity(:, :, i_rot(:)), 3);
 
 twrVelocity= repmat(velocity, 1, 1, size(twrVelocity, 3));
 
