@@ -78,6 +78,6 @@ function template= readOutSensors(template, list, module)
 if exist(list, 'file')
     OutSensors_cell = readcell(list , 'Sheet', module);
     idx= strcmpi(OutSensors_cell(:, 1), 'x');
-    template.OutList= {OutSensors_cell(idx, 2)};
+    template.OutList= {strcat('"', OutSensors_cell(idx, 2), '"')};
     template.OutListComments=  {strcat({'- '} , OutSensors_cell(idx, 4))};
 end
