@@ -1,7 +1,6 @@
+% Copyright (c) 2022 Jens Geisler
 
-% Copyright (c) 2021 Jens Geisler
-
-function write_make_scripts(sim_path, wind_path, DLC_Set_Info)
+function write_make_scripts(sim_path, wind_path, DLC_Set_Info, config)
 all_main_files= [];
 all_turb_files= [];
 for i_DLC= 1:length(DLC_Set_Info.DLC)
@@ -13,7 +12,7 @@ for i_DLC= 1:length(DLC_Set_Info.DLC)
     end
     all_main_files= [all_main_files; main_files];
     
-    create_script('openfast', main_files, fullfile(sim_path, DLC_name));
+    create_script(config.OpenFAST, main_files, fullfile(sim_path, DLC_name));
 
     if DLC_Set_Info.DLC(i_DLC).turbsim_trig
         turbsim_files= strings(length(DLC_Set_Info.DLC(i_DLC).simulation), 1);
@@ -23,9 +22,9 @@ for i_DLC= 1:length(DLC_Set_Info.DLC)
         end
         all_turb_files= [all_turb_files; turbsim_files];
         
-        create_script('turbsim', turbsim_files, fullfile(wind_path, DLC_name));
+        create_script(config.turbsim, turbsim_files, fullfile(wind_path, DLC_name));
     end
 end
 
-create_script('openfast', all_main_files, fullfile(sim_path, 'all'));
-create_script('turbsim', all_turb_files, fullfile(wind_path, 'all'));
+create_script(config.OpenFAST, all_main_files, fullfile(sim_path, 'all'));
+create_script(config.turbsim, all_turb_files, fullfile(wind_path, 'all'));

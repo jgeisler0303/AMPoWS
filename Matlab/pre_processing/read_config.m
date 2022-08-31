@@ -3,7 +3,7 @@
 %   Loads the template input files into the templates structure
 %
 % Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
-% Copyright (c) 2021 Jens Geisler
+% Copyright (c) 2022 Jens Geisler
 
 function [DLC_cell,config,templates] = read_config(xls_name)
 %% load configuration and template-files
@@ -32,6 +32,15 @@ config.uni_wind_path = config_cell{8,2};
 config.CutinWind= config_cell{13,2};
 config.RatedWind= config_cell{14,2};
 config.CutoutWind= config_cell{15,2};
+config.OpenFAST= config_cell{18,2};
+if isempty(config.OpenFAST)
+    config.OpenFAST= 'openfast';
+end
+config.turbsim= config_cell{19,2};
+if isempty(config.turbsim)
+    config.turbsim= 'turbsim';
+end
+
 
 [idx, DLC_cell] = find_label_or_create(DLC_cell, '{CutinWind}', false);
 [DLC_cell{2:end, idx}] = deal(config.CutinWind);

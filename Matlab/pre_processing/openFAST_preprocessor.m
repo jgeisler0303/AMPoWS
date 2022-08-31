@@ -154,6 +154,6 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
     end   
 end
 
-write_make_scripts(config.sim_path, config.wind_path, DLC_Set_Info)
-write_makefile(config.sim_path, DLC_Set_Info)
+write_make_scripts(config.sim_path, config.wind_path, DLC_Set_Info, config)
+write_makefile(config, DLC_Set_Info)
 save(fullfile(config.sim_path, 'DLC_Set_Info'), 'DLC_Set_Info')

@@ -5,7 +5,7 @@
 %   name: name of generated the .bat/.sh file
 %
 % Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
-% Copyright (c) 2021 Jens Geisler
+% Copyright (c) 2022 Jens Geisler
 
 function [] = create_script(command, files, name)
 

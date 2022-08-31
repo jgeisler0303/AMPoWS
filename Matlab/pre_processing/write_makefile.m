@@ -1,13 +1,12 @@
+% Copyright (c) 2022 Jens Geisler
 
-% Copyright (c) 2021 Jens Geisler
+function write_makefile(config, DLC_Set_Info)
 
-function write_makefile(sim_path, DLC_Set_Info)
-
-filename= fullfile(sim_path, 'makefile');
+filename= fullfile(config.sim_path, 'makefile');
 output = fopen(filename, 'w');
 
-fprintf(output, 'OPENFAST=openfast\n\n');
-fprintf(output, 'TURBSIM=turbsim\n\n');
+fprintf(output, 'OPENFAST=%s\n\n', config.OpenFAST);
+fprintf(output, 'TURBSIM=%s\n\n', config.turbsim);
 
 for i_DLC= 1:length(DLC_Set_Info.DLC)
     DLC_name= DLC_Set_Info.DLC(i_DLC).name;
