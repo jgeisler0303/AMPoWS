@@ -8,7 +8,7 @@ turbsim_trig= false;
 wind_slope = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Slope',true)};
 windclass = dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Class',true)};
 turbclass = dlc_cell{row,find_label_or_create(dlc_cell,'Turb-Class',true)};
-shearexp = dlc_cell{row,find_label_or_create(dlc_cell,'Shear-Exp',true)};
+iec_standard = dlc_cell{row,find_label_or_create(dlc_cell,'Shear-Exp',true)};
 time_trans = dlc_cell{row,find_label_or_create(dlc_cell,'Transient-Event-Time',true)};
 ieccond = erase(dlc_cell{row,find_label_or_create(dlc_cell,'Wind-Type',true)},'IEC:'); 
 duration = dlc_cell{row,find_label_or_create(dlc_cell,'Duration',true)};
@@ -26,8 +26,8 @@ dlc_cell{row,idx} = duration;
 dlc_cell{row,idx} = wind_slope;
 
 % search for Shear-Exponent label (IECWind input)
-[idx,dlc_cell] = find_label_or_create(dlc_cell,'{Shear_Exp}',false);
-dlc_cell{row,idx} = shearexp;
+[idx,dlc_cell] = find_label_or_create(dlc_cell,'{IEC_standard}',false);
+dlc_cell{row,idx} = iec_standard;
 
 % search for Transient-Event-Time label (IECWind input)
 [idx,dlc_cell] = find_label_or_create(dlc_cell,'{Transient_Event_Time}',false);

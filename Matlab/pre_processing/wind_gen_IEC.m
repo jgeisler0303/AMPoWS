@@ -34,12 +34,12 @@ if ~exist('iecwind', 'file') && ~exist('iecwind.exe', 'file')
     error('Program iecwind not found. Please download it from https://github.com/BecMax/IECWind and place it in the AMPoWS preprocessing directory.')
 end
 if ispc
-    [res, msg]= system(['set path=' getenv('PATH') ' & iecwind.exe']);
+    [res, msg]= system(['set path=' getenv('PATH') ' & ' fullfile(fileparts(mfilename('fullpath')), 'iecwind.exe')]);
 else
     [res, msg]= system('iecwind');
 end
 
-if res~=0
+if res~=0 || contains(msg, 'WARNING')
     error('iecwind terminated with message: "%s"', msg);
 end
 if contains(msg, 'WARNING')
