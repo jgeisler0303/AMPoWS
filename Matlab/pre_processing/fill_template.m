@@ -34,7 +34,7 @@ for col_xls = col_start:size(DLC_cell,2)
         elseif ischar(DLC_cell{row_xls,col_xls}) 
             val= str2num(DLC_cell{row_xls,col_xls});
             if isempty(val)
-                if DLC_cell{row_xls,col_xls}(1)~='"'
+                if DLC_cell{row_xls,col_xls}(1)~='"'  && ~strcmpi(DLC_cell{row_xls,col_xls}, 'true') && ~strcmpi(DLC_cell{row_xls,col_xls}, 'false')
                     template.Val{idx} = append('"',DLC_cell{row_xls,col_xls},'"'); % add " " to string elements
                 else
                     template.Val{idx} = DLC_cell{row_xls,col_xls}; % add " " to string elements
