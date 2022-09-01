@@ -30,7 +30,7 @@ fclose(output);
 
 
 %generate .wnd file
-if ~exist('iecwind', 'file')
+if ~exist('iecwind', 'file') && ~exist('iecwind.exe', 'file')
     error('Program iecwind not found. Please download it from https://github.com/BecMax/IECWind and place it in the AMPoWS preprocessing directory.')
 end
 if ispc
