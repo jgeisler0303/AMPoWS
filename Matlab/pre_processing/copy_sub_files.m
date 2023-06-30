@@ -39,9 +39,12 @@ templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'Profil
 
 function templates= copy_sub_file(templates, config, target, template, VarName)
 FilePath= GetFASTPar(templates.(template), VarName);
-src= GetFullFileName(FilePath, fileparts(config.([template '_path'])));
-
-QFileName= copy_file(src, target);
+if isempty(FilePath) || any(strcmpi(strrep(FilePath, '"', ''), {'UNUSED', 'UNKNOWN'}))
+    QFileName= '"unknown"';
+else
+    src= GetFullFileName(FilePath, fileparts(config.([template '_path'])));
+    QFileName= copy_file(src, target);
+end
 templates.(template)= SetFASTPar(templates.(template), VarName, QFileName);
 
 
@@ -53,9 +56,5 @@ if exist(src, 'file')
     
     QFileName= ['"' FileName Ext '"'];
 else
-    if isempty(src) || any(strcmpi(strrep(src, '"', ''), {'UNUSED', 'UNKNOWN'}))
-        QFileName= '"unknown"';
-    else
-        error('Could not find file %s to copy to the destination %s', src, target)
-    end
+    error('Could not find file %s to copy to the destination %s', src, target)
 end
