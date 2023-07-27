@@ -20,7 +20,7 @@ templates= copy_sub_file(templates, config, config.sim_path, 'aerodyn', 'ADBlFil
 for i= 1:length(templates.aerodyn.FoilNm)
     src= GetFullFileName(templates.aerodyn.FoilNm{i}, fileparts(config.aerodyn_path));
     templates.aerodyn.FoilNm{i}= copy_file(src, config.sim_path);
-    copy_file(strrep(src, '.dat', '_coords.txt'), config.sim_path);
+    copy_file(strrep(src, '.dat', '_coords.txt'), config.sim_path, true);
 end
 
 templates= copy_sub_file(templates, config, config.sim_path, 'elastodyn', 'BldFile(1)');
@@ -48,7 +48,8 @@ end
 templates.(template)= SetFASTPar(templates.(template), VarName, QFileName);
 
 
-function QFileName= copy_file(src, target)
+function QFileName= copy_file(src, target, optional)
+src= strrep(src, '\', filesep);
 if exist(src, 'file')
     [~, FileName, Ext]= fileparts(src);
     dst= fullfile(target, [FileName Ext]);
@@ -56,5 +57,8 @@ if exist(src, 'file')
     
     QFileName= ['"' FileName Ext '"'];
 else
+    if exist('optional', 'var') && optional
+        return
+    end
     error('Could not find file %s to copy to the destination %s', src, target)
 end
