@@ -8,6 +8,9 @@
 % Copyright (c) 2022 Jens Geisler
 
 function [] = create_script(command, files, name)
+if ispc
+    command= strrep(command, '\', '\\');
+end
 
 filename= join([name,'.sh']);
 write_script(filename, '#!/bin/bash', command, files)

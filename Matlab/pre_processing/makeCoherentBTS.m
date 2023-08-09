@@ -1,7 +1,14 @@
 function [v_mean, time]= makeCoherentBTS(file_names, radius, with_shear)
+if ~exist('radius', 'var')
+    radius= [];
+end
+if ~exist('with_shear', 'var')
+    with_shear= 0;
+end
+
 if iscell(file_names)
     for i= 1:length(file_names)
-        makeCoherentBTS(file_names{i})
+        makeCoherentBTS(file_names{i}, radius, with_shear);
     end
     return
 end
