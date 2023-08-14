@@ -2,7 +2,7 @@
 % Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
 % Copyright (c) 2021 Jens Geisler
 
-function openFAST_preprocessor(conig_file_name)
+function openFAST_preprocessor(conig_file_name, openfast_exe, turbsim_exe)
 
 addpath(fileparts(mfilename('fullpath')))
 
@@ -21,6 +21,12 @@ if ~isempty(config_path)
 end
 
 [DLC_cell,config,templates] = read_config([conig_file_name, conig_file_ext]);
+if exist('openfast_exe', 'var') && ~isempty(openfast_exe)
+    config.OpenFAST= openfast_exe;
+end
+if exist('turbsim_exe', 'var') && ~isempty(turbsim_exe)
+    config.turbsim= turbsim_exe;
+end
 
 % create target directories if they don't exist yet
 [~, ~]= mkdir(config.sim_path); % suppress warning, if directory exists
