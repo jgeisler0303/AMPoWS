@@ -4,10 +4,12 @@
 % Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
 % Copyright (c) 2021 Jens Geisler
 
-function[template, variations] = fill_template(i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index, g_index)
+function[template, variations] = fill_template(i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index, g_index, g_name)
 
-variations= struct('label', {}, 'value', {}, 'multi', {}, 'group1st', {});
+variations= struct('label', {}, 'value', {}, 'g_value', {}, 'multi', {}, 'group1st', {});
 group1st= diff([0 g_index]);
+
+if isempty(template), return, end
 
 % loop over each "non-basic" column
 for col_xls = col_start:size(DLC_cell,2)
@@ -51,8 +53,11 @@ for col_xls = col_start:size(DLC_cell,2)
         if varied
             variations(end+1).label= DLC_cell{1,col_xls};
             variations(end).value= template.Val(idx);
+            variations(end).g_value= [];
             variations(end).multi= multi_vary;
             if multi_vary
+                variations(end).label= g_name{g_index(idx_v)}; % DLC_cell{1,col_xls};
+                variations(end).g_value= v_combo(find(g_index==g_index(idx_v), 1), i_DLC);
                 variations(end).group1st= group1st(idx_v);
             else
                 variations(end).group1st= false;

@@ -14,7 +14,7 @@ for i = 1:length(variations)
     if ~variations(i).group1st, continue, end % TODO: this is not ideal, better would be to use the group label
     
     f_label = erase(variations(i).label, erase_label);
-    f_value = strrep(strrep(string(variations(i).value),'.','p'), '-', 'neg');
+    f_value = strrep(strrep(string(variations(i).g_value),'.','p'), '-', 'neg');
     if strcmp(f_label, 'uni-wind-param')
         filename_ext = append(filename_ext, wind_type, '-', f_value, '_');
     else

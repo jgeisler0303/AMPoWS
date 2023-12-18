@@ -32,9 +32,14 @@ templates= copy_sub_file(templates, config, config.sim_path, 'elastodyn', 'TwrFi
 templates= copy_sub_file(templates, config, config.sim_path, 'servodyn', 'DLL_FileName');
 templates= copy_sub_file(templates, config, config.sim_path, 'servodyn', 'DLL_InFile');
 
-templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'UserFile');
-templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'ProfileFile');
-% templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'CTEventFile'); % this is not a file
+templates= copy_sub_file(templates, config, config.sim_path, 'substruct', 'Red_FileName');
+templates= copy_sub_file(templates, config, config.sim_path, 'substruct', 'RedCst_FileName');
+
+
+if ~(isempty(config.wind_path) || ismissing(config.wind_path))
+    templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'UserFile');
+    templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'ProfileFile');
+end
 
 
 function templates= copy_sub_file(templates, config, target, template, VarName)

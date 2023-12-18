@@ -30,8 +30,12 @@ end
 
 % create target directories if they don't exist yet
 [~, ~]= mkdir(config.sim_path); % suppress warning, if directory exists
-[~, ~]= mkdir(config.wind_path); % suppress warning, if directory exists
-rel_wind_path= make_relative_path(config.sim_path, config.wind_path);
+if ~(isempty(config.wind_path) || ismissing(config.wind_path))
+    [~, ~]= mkdir(config.wind_path); % suppress warning, if directory exists
+    rel_wind_path= make_relative_path(config.sim_path, config.wind_path);
+else
+    rel_wind_path= '';
+end
 
 % copy all sub-file that don't need templating into the target directory
 templates= copy_sub_files(templates, config);
@@ -73,7 +77,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
     DLC_Set_Info.DLC(row_xls-1).turbsim_trig= turbsim_trig;
 
     % Identify all vectors in row & save all possible combinations
-    [DLC_cell, v_combo, v_index, g_index] = generate_vector_combinations(DLC_cell, row_xls, col_start, config);   
+    [DLC_cell, v_combo, v_index, g_index, g_name] = generate_vector_combinations(DLC_cell, row_xls, col_start, config);   
             
     if isempty(v_combo)
         col_DLC = 1;    % no vectors: no combinations -> only 1 cycle of write & generate   
@@ -117,7 +121,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
         for i_DLC = col_DLC
             %% 2. Write values in templates  
             [template, variations] = ...
-                fill_template(i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index, g_index) ;
+                fill_template(i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index, g_index, g_name);
 
             if strcmp(template_name, 'inflowwind')
                 variations= joinVariations(DLC_Set_Info.DLC(row_xls-1).simulation(i_DLC), {'uni_wind', 'turbsim'});
@@ -132,11 +136,17 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
             % compose filename
             if strcmp(template_name, 'uni_wind') && any(strcmp(template.Label, '{bts_file_template}'))
                 % special treatment of file name of already generated bts files
-                input_file_name= sprintf(template.Val{find(strcmpi(template.Label, '{bts_file_template}'), 1)}, template.Val{find(strcmpi(template.Label, 'URef'), 1)});
+                input_file_name= sprintf(template.Val{find(strcmpi(template.Label, '{bts_file_template}'), 1)}, asdouble(template.Val{find(strcmpi(template.Label, 'URef'), 1)}, template.Val{find(strcmpi(template.Label, 'RandSeed1'), 1)}), asdouble(template.Val{find(strcmpi(template.Label, 'Seed'), 1)}));
                 input_file_name= strrep(input_file_name, '"', '');
                 if ~endsWith(input_file_name, '.bts')
                     input_file_name= [input_file_name '.bts'];
                 end
+                input_file_name= string(input_file_name);
+                rel_file_path= append(rel_wind_path, input_file_name);
+            elseif strcmp(template_name, 'uni_wind') && any(strcmp(template.Label, '{wnd_file_template}'))
+                % special treatment of file name of already generated wnd files
+                input_file_name= sprintf(template.Val{find(strcmpi(template.Label, '{wnd_file_template}'), 1)}, asdouble(template.Val{find(strcmpi(template.Label, 'URef'), 1)}), asdouble(template.Val{find(strcmpi(template.Label, 'RandSeed1'), 1)}));
+                input_file_name= strrep(input_file_name, '"', '');
                 input_file_name= string(input_file_name);
                 rel_file_path= append(rel_wind_path, input_file_name);
             elseif strcmp(template_name, 'iecwind') || strcmp(template_name, 'turbsim')
@@ -156,7 +166,7 @@ for row_xls = 2:size(DLC_cell,1) % first row contains labels
             % which they reference each other. otherwise generate_files
             % would have to be called in a separate loop
             generate_file(template_name, template, files, config, turbsim_trig, input_file_path, i_DLC, wind_type);
-       end
+        end
     end   
 end
 
