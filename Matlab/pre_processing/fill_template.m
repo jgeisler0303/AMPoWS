@@ -4,7 +4,7 @@
 % Copyright (c) 2021 Hannah Dentzien, Ove Hagge Ellhöft
 % Copyright (c) 2021 Jens Geisler
 
-function[template, variations] = fill_template(i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index, g_index, g_name)
+function[template, variations] = fill_template(i_DLC, DLC_cell, row_xls, col_start, template, v_combo, v_index, g_index, g_name, gv_index)
 
 variations= struct('label', {}, 'value', {}, 'g_value', {}, 'multi', {}, 'group1st', {});
 group1st= diff([0 g_index]);
@@ -57,7 +57,7 @@ for col_xls = col_start:size(DLC_cell,2)
             variations(end).multi= multi_vary;
             if multi_vary
                 variations(end).label= g_name{g_index(idx_v)}; % DLC_cell{1,col_xls};
-                variations(end).g_value= v_combo(find(g_index==g_index(idx_v), 1), i_DLC);
+                variations(end).g_value= v_combo(gv_index(idx_v), i_DLC);
                 variations(end).group1st= group1st(idx_v);
             else
                 variations(end).group1st= false;

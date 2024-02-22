@@ -36,13 +36,15 @@ templates= copy_sub_file(templates, config, config.sim_path, 'substruct', 'Red_F
 templates= copy_sub_file(templates, config, config.sim_path, 'substruct', 'RedCst_FileName');
 
 
-if ~(isempty(config.wind_path) || ismissing(config.wind_path))
+if ~(isempty(config.wind_path) || (isstring(config.wind_path) && ismissing(config.wind_path)))
     templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'UserFile');
     templates= copy_sub_file(templates, config, config.wind_path, 'turbsim', 'ProfileFile');
 end
 
 
 function templates= copy_sub_file(templates, config, target, template, VarName)
+if ~isfield(templates, template), return, end
+
 FilePath= GetFASTPar(templates.(template), VarName);
 if isempty(FilePath) || any(strcmpi(strrep(FilePath, '"', ''), {'UNUSED', 'UNKNOWN'}))
     QFileName= '"unknown"';
