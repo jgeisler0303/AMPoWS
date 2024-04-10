@@ -8,6 +8,7 @@ function[template, variations] = fill_template(i_DLC, DLC_cell, row_xls, col_sta
 
 variations= struct('label', {}, 'value', {}, 'g_value', {}, 'multi', {}, 'group1st', {});
 group1st= diff([0 g_index]);
+group1st(group1st<0)= 0;
 
 if isempty(template), return, end
 
@@ -51,15 +52,19 @@ for col_xls = col_start:size(DLC_cell,2)
         end
         
         if varied
-            variations(end+1).label= DLC_cell{1,col_xls};
-            variations(end).value= template.Val(idx);
-            variations(end).g_value= [];
-            variations(end).multi= multi_vary;
             if multi_vary
-                variations(end).label= g_name{g_index(idx_v)}; % DLC_cell{1,col_xls};
-                variations(end).g_value= v_combo(gv_index(idx_v), i_DLC);
-                variations(end).group1st= group1st(idx_v);
+                if isempty(variations) || ~ismember(g_name{g_index(idx_v)}, {variations.label})
+                    variations(end+1).label= g_name{g_index(idx_v)}; % DLC_cell{1,col_xls};
+                    variations(end).value= template.Val(idx);
+                    variations(end).g_value= v_combo(gv_index(idx_v), i_DLC);
+                    variations(end).multi= true;
+                    variations(end).group1st= group1st(g_index(idx_v));
+                end
             else
+                variations(end+1).label= DLC_cell{1,col_xls};
+                variations(end).value= template.Val(idx);
+                variations(end).g_value= [];
+                variations(end).multi= false;
                 variations(end).group1st= false;
             end
         end

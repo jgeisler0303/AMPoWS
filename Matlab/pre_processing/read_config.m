@@ -105,7 +105,7 @@ end
 config.OutSensors= config_cell{17,2};
 
 % generate wind template structures
-if isempty(config_cell{7,2}) || (isstring(config_cell{7,2}) && ismissing(config_cell{7,2}))
+if isempty(config_cell{7,2}) || ismissing(config_cell{7,2})
     templates.turbsim= [];
 else
     templates.turbsim = FAST2Matlab(config_cell{7,2});
@@ -146,7 +146,7 @@ end
 
 function sf= getSubFile(config, label, fast_template)
 sf= config;
-if isempty(sf) || (isstring(sf) && ismissing(sf))
+if isempty(sf) || ismissing(sf)
     FP = FAST2Matlab(fast_template);
     [~, sf]= GetFASTPar_Subfile(FP, label, fileparts(fast_template));
 end
