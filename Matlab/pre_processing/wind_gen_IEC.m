@@ -36,7 +36,7 @@ end
 if ispc
     [res, msg]= system(['set path=' getenv('PATH') ' & ' fullfile(fileparts(mfilename('fullpath')), 'iecwind.exe')]);
 else
-    [res, msg]= system('iecwind');
+    [res, msg]= system(fullfile(fileparts(mfilename('fullpath')), 'iecwind'));
 end
 
 if res~=0 || contains(msg, 'WARNING')

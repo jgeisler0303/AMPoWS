@@ -147,7 +147,7 @@ end
 
 function sf= getSubFile(config, label, fast_template)
 sf= config;
-if isempty(sf) || ismissing(sf)
+if isempty(sf) || (isstring(sf) && ismissing(sf))
     FP = FAST2Matlab(fast_template);
     [~, sf]= GetFASTPar_Subfile(FP, label, fileparts(fast_template));
 end
